@@ -222,267 +222,148 @@
         const verseContent = document.getElementById('verseContent');
         const body = document.body;
 
-        // Variables globales
-        let currentBook = 'Genesis';
+        // Inicializar BibleLoader
+        const bibleLoader = new BibleLoader();
+        let xmlDoc = null;
+
+        // Variables de estado
+        let currentBook = 'Génesis';
         let currentChapter = 1;
-        let currentVersion = 'rvr1960';
-        let currentVerse = null;
-        let bibleData = null;
+        let currentVerse = 1;
 
-        // Mapeo de nombres de libros
-        const bookNames = {
-            'Genesis': 'Génesis',
-            'Exodo': 'Éxodo',
-            'Levitico': 'Levítico',
-            'Numeros': 'Números',
-            'Deuteronomio': 'Deuteronomio',
-            'Josue': 'Josué',
-            'Jueces': 'Jueces',
-            'Rut': 'Rut',
-            '1Samuel': '1 Samuel',
-            '2Samuel': '2 Samuel',
-            '1Reyes': '1 Reyes',
-            '2Reyes': '2 Reyes',
-            '1Cronicas': '1 Crónicas',
-            '2Cronicas': '2 Crónicas',
-            'Esdras': 'Esdras',
-            'Nehemias': 'Nehemías',
-            'Ester': 'Ester',
-            'Job': 'Job',
-            'Salmos': 'Salmos',
-            'Proverbios': 'Proverbios',
-            'Eclesiastes': 'Eclesiastés',
-            'Cantares': 'Cantares',
-            'Isaias': 'Isaías',
-            'Jeremias': 'Jeremías',
-            'Lamentaciones': 'Lamentaciones',
-            'Ezequiel': 'Ezequiel',
-            'Daniel': 'Daniel',
-            'Oseas': 'Oseas',
-            'Joel': 'Joel',
-            'Amos': 'Amós',
-            'Abdias': 'Abdías',
-            'Jonas': 'Jonás',
-            'Miqueas': 'Miqueas',
-            'Nahum': 'Nahúm',
-            'Habacuc': 'Habacuc',
-            'Sofonias': 'Sofonías',
-            'Hageo': 'Hageo',
-            'Zacarias': 'Zacarías',
-            'Malaquias': 'Malaquías',
-            'Mateo': 'Mateo',
-            'Marcos': 'Marcos',
-            'Lucas': 'Lucas',
-            'Juan': 'Juan',
-            'Hechos': 'Hechos',
-            'Romanos': 'Romanos',
-            '1Corintios': '1 Corintios',
-            '2Corintios': '2 Corintios',
-            'Galatas': 'Gálatas',
-            'Efesios': 'Efesios',
-            'Filipenses': 'Filipenses',
-            'Colosenses': 'Colosenses',
-            '1Tesalonicenses': '1 Tesalonicenses',
-            '2Tesalonicenses': '2 Tesalonicenses',
-            '1Timoteo': '1 Timoteo',
-            '2Timoteo': '2 Timoteo',
-            'Tito': 'Tito',
-            'Filemon': 'Filemón',
-            'Hebreos': 'Hebreos',
-            'Santiago': 'Santiago',
-            '1Pedro': '1 Pedro',
-            '2Pedro': '2 Pedro',
-            '1Juan': '1 Juan',
-            '2Juan': '2 Juan',
-            '3Juan': '3 Juan',
-            'Judas': 'Judas',
-            'Apocalipsis': 'Apocalipsis'
+        // Mapeo de versiones
+        const versionMap = {
+            'rvr1960': 'Reina-Valera 1960',
+            'dhh': 'Dios Habla Hoy',
+            'lbla': 'La Biblia de Las Americas',
+            'ntv': 'Nueva Traducción Viviente',
+            'tla': 'Traducción en Lenguaje Actual'
         };
 
-        // Lista de libros para el selector
-        const books = Object.keys(bookNames);
+        // Cargar la Biblia inicial
+        async function loadInitialBible() {
+            try {
+                // Obtener parámetros de la URL
+                const params = new URLSearchParams(window.location.search);
+                const book = params.get('book');
+                const chapter = params.get('chapter');
+                const verse = params.get('verse');
+                const version = params.get('version') || 'rvr1960';
 
-        // Mapeo de versiones a archivos
-        const versionFiles = {
-            'rvr1960': './biblia-files/Reina-Valera 1960.xmm',
-            'dhh': './biblia-files/Dios Habla Hoy.xmm',
-            'lbla': './biblia-files/La Biblia de Las Americas.xmm',
-            'ntv': './biblia-files/Nueva Traducción Viviente.xmm',
-            'tla': './biblia-files/Traducción en Lenguaje Actual.xmm'
-        };
-
-        // Capítulos por libro
-        const chaptersPerBook = {
-            'Genesis': 50, 'Exodo': 40, 'Levitico': 27, 'Numeros': 36, 'Deuteronomio': 34,
-            'Josue': 24, 'Jueces': 21, 'Rut': 4, '1Samuel': 31, '2Samuel': 24, '1Reyes': 22,
-            '2Reyes': 25, '1Cronicas': 29, '2Cronicas': 36, 'Esdras': 10, 'Nehemias': 13,
-            'Ester': 10, 'Job': 42, 'Salmos': 150, 'Proverbios': 31, 'Eclesiastes': 12,
-            'Cantares': 8, 'Isaias': 66, 'Jeremias': 52, 'Lamentaciones': 5, 'Ezequiel': 48,
-            'Daniel': 12, 'Oseas': 14, 'Joel': 3, 'Amos': 9, 'Abdias': 1, 'Jonas': 4,
-            'Miqueas': 7, 'Nahum': 3, 'Habacuc': 3, 'Sofonias': 3, 'Hageo': 2, 'Zacarias': 14,
-            'Malaquias': 4, 'Mateo': 28, 'Marcos': 16, 'Lucas': 24, 'Juan': 21, 'Hechos': 28,
-            'Romanos': 16, '1Corintios': 16, '2Corintios': 13, 'Galatas': 6, 'Efesios': 6,
-            'Filipenses': 4, 'Colosenses': 4, '1Tesalonicenses': 5, '2Tesalonicenses': 3,
-            '1Timoteo': 6, '2Timoteo': 4, 'Tito': 3, 'Filemon': 1, 'Hebreos': 13,
-            'Santiago': 5, '1Pedro': 5, '2Pedro': 3, '1Juan': 5, '2Juan': 1, '3Juan': 1,
-            'Judas': 1, 'Apocalipsis': 22
-        };
-
-        // Obtener parámetros de la URL
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('book')) {
-            currentBook = urlParams.get('book');
-        }
-        if (urlParams.has('chapter')) {
-            currentChapter = parseInt(urlParams.get('chapter'));
-        }
-        if (urlParams.has('version')) {
-            const version = urlParams.get('version').toLowerCase();
-            if (versionFiles[version]) {
-                currentVersion = version;
+                // Establecer versión
                 versionSelector.value = version;
+
+                // Cargar la Biblia
+                xmlDoc = await bibleLoader.loadBible(versionMap[version]);
+
+                // Obtener lista de libros y llenar el selector
+                const books = bibleLoader.getBooks(xmlDoc);
+                bookSelector.innerHTML = books.map(book => 
+                    `<option value="${book}">${book}</option>`
+                ).join('');
+
+                // Establecer libro actual
+                if (book) {
+                    currentBook = book;
+                    bookSelector.value = bibleLoader.bookNames[book] || book;
+                }
+
+                // Actualizar capítulos
+                updateChapterSelector();
+
+                // Establecer capítulo y versículo
+                if (chapter) {
+                    currentChapter = parseInt(chapter);
+                    chapterSelector.value = currentChapter;
+                }
+                if (verse) {
+                    currentVerse = parseInt(verse);
+                }
+
+                // Cargar versículos
+                await loadVerses();
+
+                // Si hay un versículo específico, scrollear hasta él
+                if (currentVerse > 1) {
+                    const verseElement = document.querySelector(`[data-verse="${currentVerse}"]`);
+                    if (verseElement) {
+                        verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        verseElement.classList.add('highlighted');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error al cargar la Biblia:', error);
+                verseContent.innerHTML = `<p class="error">Error al cargar la Biblia: ${error.message}</p>`;
             }
         }
-        if (urlParams.has('verse')) {
-            currentVerse = parseInt(urlParams.get('verse'));
+
+        // Actualizar selector de capítulos
+        function updateChapterSelector() {
+            try {
+                const numChapters = bibleLoader.getChaptersCount(xmlDoc, currentBook);
+                chapterSelector.innerHTML = Array.from({ length: numChapters }, (_, i) => 
+                    `<option value="${i + 1}">${i + 1}</option>`
+                ).join('');
+                chapterSelector.value = currentChapter;
+                updateNavigation(numChapters);
+            } catch (error) {
+                console.error('Error al actualizar capítulos:', error);
+            }
         }
 
         // Cargar versículos
         async function loadVerses() {
-            verseContent.innerHTML = '<div class="loading">Cargando...</div>';
-            
             try {
-                const filePath = versionFiles[currentVersion];
-                if (!filePath) throw new Error('Versión no encontrada');
-
-                const response = await fetch(filePath);
-                if (!response.ok) throw new Error('No se pudo cargar el archivo');
+                verseContent.innerHTML = '<div class="loading">Cargando...</div>';
                 
-                const data = await response.text();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data, "text/xml");
+                const verses = bibleLoader.getVerses(xmlDoc, currentBook, currentChapter);
                 
-                // Buscar el libro y capítulo
-                const book = xmlDoc.querySelector(`b[n="${currentBook}"]`);
-                if (!book) throw new Error(`Libro ${currentBook} no encontrado`);
-                
-                const chapter = book.querySelector(`c[n="${currentChapter}"]`);
-                if (!chapter) throw new Error(`Capítulo ${currentChapter} no encontrado`);
-                
-                // Obtener todos los versículos
-                const verses = Array.from(chapter.querySelectorAll('v'))
-                    .sort((a, b) => parseInt(a.getAttribute('n')) - parseInt(b.getAttribute('n')))
-                    .map(verse => ({
-                        number: parseInt(verse.getAttribute('n')),
-                        text: verse.textContent.trim()
-                    }));
-                
-                if (!verses.length) throw new Error('No se encontraron versículos');
-                
-                displayVerses(verses);
-                
-                // Actualizar título
-                const bookTitle = bookNames[currentBook] || currentBook;
+                // Crear título del capítulo
                 const chapterTitle = document.createElement('h1');
-                chapterTitle.textContent = `${bookTitle} ${currentChapter}`;
-                verseContent.insertBefore(chapterTitle, verseContent.firstChild);
+                chapterTitle.textContent = `${currentBook} ${currentChapter}`;
+                
+                // Crear contenedor de versículos
+                const versesContainer = document.createElement('div');
+                verses.forEach(verse => {
+                    const verseElement = document.createElement('p');
+                    verseElement.className = 'verse';
+                    verseElement.setAttribute('data-verse', verse.number);
+                    verseElement.innerHTML = `<span class="verse-number">${verse.number}</span>${verse.text}`;
+                    versesContainer.appendChild(verseElement);
+                });
+                
+                // Limpiar y agregar nuevo contenido
+                verseContent.innerHTML = '';
+                verseContent.appendChild(chapterTitle);
+                verseContent.appendChild(versesContainer);
                 
             } catch (error) {
                 console.error('Error:', error);
-                verseContent.innerHTML = `<div class="error">Error al cargar los versículos: ${error.message}</div>`;
+                verseContent.innerHTML = `<p class="error">Error al cargar los versículos: ${error.message}</p>`;
             }
-        }
-
-        // Función para mostrar versículos
-        function displayVerses(verses) {
-            verseContent.innerHTML = '';
-            const chapterTitle = verseContent.querySelector('h1');
-            if (chapterTitle) {
-                verseContent.removeChild(chapterTitle);
-            }
-            verses.forEach(verse => {
-                const verseElement = document.createElement('p');
-                verseElement.className = 'verse';
-                verseElement.dataset.verse = verse.number;
-                verseElement.innerHTML = `<span class="verse-number">${verse.number}</span> ${verse.text}`;
-                verseContent.appendChild(verseElement);
-            });
-
-            if (currentVerse) {
-                highlightVerse(currentVerse);
-            }
-        }
-
-        // Función para resaltar un versículo específico
-        function highlightVerse(verseNumber) {
-            if (!verseNumber) return;
-            
-            const verses = document.querySelectorAll('.verse');
-            verses.forEach(verse => {
-                if (parseInt(verse.dataset.verse) === verseNumber) {
-                    verse.classList.add('highlighted');
-                    setTimeout(() => {
-                        verse.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 500);
-                } else {
-                    verse.classList.remove('highlighted');
-                }
-            });
-        }
-
-        // Llenar selector de libros
-        function fillBookSelector() {
-            bookSelector.innerHTML = '';
-            books.forEach(book => {
-                const option = document.createElement('option');
-                option.value = book;
-                option.textContent = bookNames[book];
-                if (book === currentBook) {
-                    option.selected = true;
-                }
-                bookSelector.appendChild(option);
-            });
-        }
-
-        // Llenar selector de capítulos
-        function fillChapterSelector(book) {
-            const numChapters = chaptersPerBook[book];
-            chapterSelector.innerHTML = '';
-            for (let i = 1; i <= numChapters; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `Capítulo ${i}`;
-                if (i === currentChapter) {
-                    option.selected = true;
-                }
-                chapterSelector.appendChild(option);
-            }
-            updateNavigation(numChapters);
-        }
-
-        // Actualizar navegación
-        function updateNavigation(numChapters) {
-            prevButton.disabled = currentChapter <= 1;
-            nextButton.disabled = currentChapter >= numChapters;
         }
 
         // Eventos
-        bookSelector.addEventListener('change', (e) => {
-            currentBook = e.target.value;
+        versionSelector.addEventListener('change', async () => {
+            try {
+                xmlDoc = await bibleLoader.loadBible(versionMap[versionSelector.value]);
+                loadVerses();
+            } catch (error) {
+                console.error('Error al cambiar versión:', error);
+            }
+        });
+
+        bookSelector.addEventListener('change', () => {
+            currentBook = bookSelector.value;
             currentChapter = 1;
-            fillChapterSelector(currentBook);
+            updateChapterSelector();
             loadVerses();
         });
 
-        versionSelector.addEventListener('change', (e) => {
-            currentVersion = e.target.value;
+        chapterSelector.addEventListener('change', () => {
+            currentChapter = parseInt(chapterSelector.value);
             loadVerses();
-        });
-
-        chapterSelector.addEventListener('change', (e) => {
-            currentChapter = parseInt(e.target.value);
-            loadVerses();
-            updateNavigation(chaptersPerBook[currentBook]);
         });
 
         prevButton.addEventListener('click', () => {
@@ -490,87 +371,27 @@
                 currentChapter--;
                 chapterSelector.value = currentChapter;
                 loadVerses();
-                updateNavigation(chaptersPerBook[currentBook]);
             }
         });
 
         nextButton.addEventListener('click', () => {
-            if (currentChapter < chaptersPerBook[currentBook]) {
+            const numChapters = bibleLoader.getChaptersCount(xmlDoc, currentBook);
+            if (currentChapter < numChapters) {
                 currentChapter++;
                 chapterSelector.value = currentChapter;
                 loadVerses();
-                updateNavigation(chaptersPerBook[currentBook]);
             }
         });
 
-        // Cargar preferencia de modo oscuro
-        const isDarkMode = localStorage.getItem('darkMode') === 'true';
-        if (isDarkMode) {
+        // Modo oscuro
+        if (localStorage.getItem('darkMode') === 'true') {
             body.classList.add('dark-mode');
         }
 
-        // Cambiar modo oscuro
         darkModeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
         });
-
-        // Inicializar selectores y cargar versículos
-        bookSelector.value = currentBook;
-        fillBookSelector();
-        fillChapterSelector(currentBook);
-        loadVerses();
-
-        // Funcionalidad de notas
-        const notesBtn = document.getElementById('notesBtn');
-        const notesPanel = document.getElementById('notesPanel');
-        const closeNotes = document.getElementById('closeNotes');
-        const notesText = document.getElementById('notesText');
-        const copyNote = document.getElementById('copyNote');
-
-        // Abrir/cerrar panel de notas
-        notesBtn.addEventListener('click', () => {
-            notesPanel.classList.add('open');
-        });
-
-        closeNotes.addEventListener('click', () => {
-            notesPanel.classList.remove('open');
-        });
-
-        // Copiar nota
-        copyNote.addEventListener('click', async () => {
-            const text = notesText.value.trim();
-            if (text) {
-                try {
-                    const reference = `${bookNames[currentBook]} ${currentChapter}`;
-                    const fullText = `${text}\n\n- ${reference}`;
-                    await navigator.clipboard.writeText(fullText);
-                    alert('Texto copiado al portapapeles');
-                } catch (err) {
-                    alert('No se pudo copiar el texto');
-                }
-            }
-        });
-
-        // Cerrar panel al hacer clic fuera
-        document.addEventListener('click', (e) => {
-            if (!notesPanel.contains(e.target) && !notesBtn.contains(e.target)) {
-                notesPanel.classList.remove('open');
-            }
-        });
-
-        // Registrar el Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Error al registrar el Service Worker:', error);
-                    });
-            });
-        }
 
         // Manejar estado offline/online
         function updateOfflineStatus() {
@@ -584,7 +405,23 @@
 
         window.addEventListener('online', updateOfflineStatus);
         window.addEventListener('offline', updateOfflineStatus);
-        updateOfflineStatus(); // Verificar estado inicial
+        updateOfflineStatus();
+
+        // Registrar Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar el Service Worker:', error);
+                    });
+            });
+        }
+
+        // Iniciar carga
+        loadInitialBible();
     </script>
 </body>
 </html>
