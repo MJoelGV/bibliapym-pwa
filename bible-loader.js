@@ -2,45 +2,45 @@
 class BibleLoader {
     constructor() {
         this.bookNames = {
-            'Génesis': 'Genesis',
-            'Éxodo': 'Exodo',
-            'Levítico': 'Levitico',
-            'Números': 'Numeros',
+            'Génesis': 'Génesis',
+            'Éxodo': 'Éxodo',
+            'Levítico': 'Levítico',
+            'Números': 'Números',
             'Deuteronomio': 'Deuteronomio',
-            'Josué': 'Josue',
+            'Josué': 'Josué',
             'Jueces': 'Jueces',
             'Rut': 'Rut',
             '1 Samuel': '1 Samuel',
             '2 Samuel': '2 Samuel',
             '1 Reyes': '1 Reyes',
             '2 Reyes': '2 Reyes',
-            '1 Crónicas': '1 Cronicas',
-            '2 Crónicas': '2 Cronicas',
+            '1 Crónicas': '1 Crónicas',
+            '2 Crónicas': '2 Crónicas',
             'Esdras': 'Esdras',
-            'Nehemías': 'Nehemias',
+            'Nehemías': 'Nehemías',
             'Ester': 'Ester',
             'Job': 'Job',
             'Salmos': 'Salmos',
             'Proverbios': 'Proverbios',
-            'Eclesiastés': 'Eclesiastes',
+            'Eclesiastés': 'Eclesiastés',
             'Cantares': 'Cantares',
-            'Isaías': 'Isaias',
-            'Jeremías': 'Jeremias',
+            'Isaías': 'Isaías',
+            'Jeremías': 'Jeremías',
             'Lamentaciones': 'Lamentaciones',
             'Ezequiel': 'Ezequiel',
             'Daniel': 'Daniel',
             'Oseas': 'Oseas',
             'Joel': 'Joel',
-            'Amós': 'Amos',
-            'Abdías': 'Abdias',
-            'Jonás': 'Jonas',
+            'Amós': 'Amós',
+            'Abdías': 'Abdías',
+            'Jonás': 'Jonás',
             'Miqueas': 'Miqueas',
-            'Nahúm': 'Nahum',
+            'Nahúm': 'Nahúm',
             'Habacuc': 'Habacuc',
-            'Sofonías': 'Sofonias',
+            'Sofonías': 'Sofonías',
             'Hageo': 'Hageo',
-            'Zacarías': 'Zacarias',
-            'Malaquías': 'Malaquias',
+            'Zacarías': 'Zacarías',
+            'Malaquías': 'Malaquías',
             'Mateo': 'Mateo',
             'Marcos': 'Marcos',
             'Lucas': 'Lucas',
@@ -49,7 +49,7 @@ class BibleLoader {
             'Romanos': 'Romanos',
             '1 Corintios': '1 Corintios',
             '2 Corintios': '2 Corintios',
-            'Gálatas': 'Galatas',
+            'Gálatas': 'Gálatas',
             'Efesios': 'Efesios',
             'Filipenses': 'Filipenses',
             'Colosenses': 'Colosenses',
@@ -58,7 +58,7 @@ class BibleLoader {
             '1 Timoteo': '1 Timoteo',
             '2 Timoteo': '2 Timoteo',
             'Tito': 'Tito',
-            'Filemón': 'Filemon',
+            'Filemón': 'Filemón',
             'Hebreos': 'Hebreos',
             'Santiago': 'Santiago',
             '1 Pedro': '1 Pedro',
@@ -87,37 +87,35 @@ class BibleLoader {
 
     getBooks(xmlDoc) {
         const books = [];
-        const bookElements = xmlDoc.getElementsByTagName('book');
+        const bookElements = xmlDoc.getElementsByTagName('b');
         for (let i = 0; i < bookElements.length; i++) {
-            books.push(bookElements[i].getAttribute('name'));
+            books.push(bookElements[i].getAttribute('n'));
         }
         return books;
     }
 
     getChaptersCount(xmlDoc, book) {
-        const normalizedBook = this.bookNames[book] || book;
-        const bookElement = xmlDoc.querySelector(`book[name="${normalizedBook}"]`);
+        const bookElement = xmlDoc.querySelector(`b[n="${book}"]`);
         if (!bookElement) throw new Error(`Libro ${book} no encontrado`);
         
-        const chapters = bookElement.getElementsByTagName('chapter');
+        const chapters = bookElement.getElementsByTagName('c');
         return chapters.length;
     }
 
     getVerses(xmlDoc, book, chapter) {
-        const normalizedBook = this.bookNames[book] || book;
         const verses = [];
         
-        const bookElement = xmlDoc.querySelector(`book[name="${normalizedBook}"]`);
+        const bookElement = xmlDoc.querySelector(`b[n="${book}"]`);
         if (!bookElement) throw new Error(`Libro ${book} no encontrado`);
         
-        const chapterElement = bookElement.querySelector(`chapter[number="${chapter}"]`);
+        const chapterElement = bookElement.querySelector(`c[n="${chapter}"]`);
         if (!chapterElement) throw new Error(`Capítulo ${chapter} no encontrado`);
         
-        const verseElements = chapterElement.getElementsByTagName('verse');
+        const verseElements = chapterElement.getElementsByTagName('v');
         for (let i = 0; i < verseElements.length; i++) {
             const verse = verseElements[i];
             verses.push({
-                number: verse.getAttribute('number'),
+                number: verse.getAttribute('n'),
                 text: verse.textContent.trim()
             });
         }
