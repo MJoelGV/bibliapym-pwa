@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblia de Poder y Milagros</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="stylesheet" href="./styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
@@ -17,7 +19,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80');
+            background-image: url('./background.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -80,7 +82,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80');
+            background-image: url('./background.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -172,7 +174,7 @@
                 </div>
                 <p id="dailyProverb" class="proverb-text"></p>
                 <p id="proverbReference" class="reference"></p>
-                <a href="lectura.html" id="readMoreBtn" class="read-more">
+                <a href="./lectura.html" id="readMoreBtn" class="read-more">
                     <span class="material-icons">menu_book</span>
                     Leer más
                 </a>
@@ -189,7 +191,7 @@
             const readMoreBtn = document.getElementById('readMoreBtn');
 
             try {
-                const response = await fetch('biblia-files/Reina-Valera 1960.xmm');
+                const response = await fetch('./biblia-files/Reina-Valera 1960.xmm');
                 if (!response.ok) throw new Error('No se pudo cargar el archivo');
                 
                 const data = await response.text();
@@ -208,7 +210,7 @@
                 if (proverbio) {
                     dailyProverb.textContent = proverbio.textContent.trim();
                     proverbReference.textContent = `Proverbios ${chapter}:${verse}`;
-                    readMoreBtn.href = `lectura.html?book=Proverbios&chapter=${chapter}&verse=${verse}&version=rvr1960`;
+                    readMoreBtn.href = `./lectura.html?book=Proverbios&chapter=${chapter}&verse=${verse}&version=rvr1960`;
                 } else {
                     throw new Error('Versículo no encontrado');
                 }
@@ -216,7 +218,7 @@
                 console.error('Error:', error);
                 dailyProverb.textContent = 'El principio de la sabiduría es el temor de Jehová.';
                 proverbReference.textContent = 'Proverbios 1:7';
-                readMoreBtn.href = 'lectura.html?book=Proverbios&chapter=1&verse=7&version=rvr1960';
+                readMoreBtn.href = './lectura.html?book=Proverbios&chapter=1&verse=7&version=rvr1960';
             } finally {
                 proverbContent.querySelector('.loading').style.display = 'none';
             }
@@ -248,7 +250,7 @@
         // Registrar el Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
+                navigator.serviceWorker.register('./service-worker.js')
                     .then(registration => {
                         console.log('Service Worker registrado:', registration);
                     })

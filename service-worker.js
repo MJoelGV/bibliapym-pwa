@@ -1,28 +1,28 @@
 const CACHE_NAME = 'biblia-pwa-v1';
 const STATIC_RESOURCES = [
-    '/',
-    '/index.html',
-    '/lectura.html',
-    '/styles.css',
-    '/app.js',
-    '/bible-loader.js',
-    '/manifest.json',
-    '/icons/icon-72x72.png',
-    '/icons/icon-96x96.png',
-    '/icons/icon-128x128.png',
-    '/icons/icon-144x144.png',
-    '/icons/icon-152x152.png',
-    '/icons/icon-192x192.png',
-    '/icons/icon-384x384.png',
-    '/icons/icon-512x512.png'
+    './',
+    './index.html',
+    './lectura.html',
+    './styles.css',
+    './app.js',
+    './bible-loader.js',
+    './manifest.json',
+    './icons/icon-72x72.png',
+    './icons/icon-96x96.png',
+    './icons/icon-128x128.png',
+    './icons/icon-144x144.png',
+    './icons/icon-152x152.png',
+    './icons/icon-192x192.png',
+    './icons/icon-384x384.png',
+    './icons/icon-512x512.png'
 ];
 
 const BIBLE_FILES = [
-    '/biblia-files/Reina-Valera 1960.xmm',
-    '/biblia-files/Dios Habla Hoy.xmm',
-    '/biblia-files/La Biblia de Las Americas.xmm',
-    '/biblia-files/Nueva Traducción Viviente.xmm',
-    '/biblia-files/Traducción en Lenguaje Actual.xmm'
+    './biblia-files/Reina-Valera 1960.xmm',
+    './biblia-files/Dios Habla Hoy.xmm',
+    './biblia-files/La Biblia de Las Americas.xmm',
+    './biblia-files/Nueva Traducción Viviente.xmm',
+    './biblia-files/Traducción en Lenguaje Actual.xmm'
 ];
 
 // Instalar el Service Worker
@@ -87,7 +87,7 @@ self.addEventListener('fetch', (event) => {
             }).catch(() => {
                 // Si falla la petición y es una página HTML, mostramos la página offline
                 if (event.request.mode === 'navigate') {
-                    return caches.match('/offline.html');
+                    return caches.match('./offline.html');
                 }
             });
         })
