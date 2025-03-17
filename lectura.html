@@ -13,372 +13,168 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: white;
-            color: #333;
-        }
-
-        header {
-            background: white;
-            border-bottom: 1px solid #eee;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .icon-button {
-            background: none;
-            border: none;
-            color: #333;
-            cursor: pointer;
-            padding: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .icon-button:hover {
-            color: #000;
-        }
-
-        .version-selector, .chapter-selector {
-            padding: 0.5rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            color: #333;
-            min-width: 150px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .version-selector:hover, .chapter-selector:hover {
-            border-color: #4CAF50;
-        }
-
-        .version-selector:focus, .chapter-selector:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
-
-        #bookSelector {
-            min-width: 200px;
-            margin-right: 0.5rem;
-        }
-
-        .navigation-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .nav-button {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 0.5rem 1rem;
-            color: #333;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .nav-button:hover:not(:disabled) {
-            background: #4CAF50;
-            color: white;
-            border-color: #4CAF50;
-        }
-
-        .nav-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
             background: #f5f5f5;
         }
 
-        main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
+        .header {
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .chapter-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 0.5rem;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .version-selector {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            margin-left: 0.5rem;
+        }
+
+        .version-selector option {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            white-space: nowrap;
             color: #333;
-            font-weight: normal;
+        }
+
+        .nav-button:hover {
+            color: #4CAF50;
+        }
+
+        .content {
+            padding: 1rem;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
         .verse {
-            display: flex;
-            gap: 1rem;
+            font-size: 1.2rem;
             margin-bottom: 1.5rem;
-            line-height: 1.6;
+            padding: 0 0.5rem;
         }
 
         .verse-number {
             color: #4CAF50;
-            min-width: 2rem;
-            text-align: right;
             font-weight: 500;
+            margin-right: 0.5rem;
         }
 
-        .verse-text {
-            flex: 1;
-            font-size: 1.2rem;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            font-size: 1.2rem;
-            color: #666;
-        }
-
-        /* Modo oscuro */
         .dark-mode {
             background: #1a1a1a;
             color: #fff;
         }
 
-        .dark-mode header {
+        .dark-mode .navigation,
+        .dark-mode .content {
             background: #1a1a1a;
-            border-bottom-color: #333;
-        }
-
-        .dark-mode .icon-button {
             color: #fff;
-        }
-
-        .dark-mode .version-selector,
-        .dark-mode .chapter-selector {
-            background: #333;
-            border-color: #444;
-            color: #fff;
-        }
-
-        .dark-mode .version-selector:hover,
-        .dark-mode .chapter-selector:hover {
-            border-color: #4CAF50;
-        }
-
-        .dark-mode .navigation-controls {
-            background: #242424;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .dark-mode .nav-button {
-            background: #333;
-            border-color: #444;
             color: #fff;
         }
 
-        .dark-mode .nav-button:hover:not(:disabled) {
-            background: #4CAF50;
-            border-color: #4CAF50;
+        .dark-mode .verse-number {
+            color: #66bb6a;
         }
 
-        .dark-mode .nav-button:disabled {
-            background: #242424;
-            border-color: #333;
-        }
-
-        .dark-mode .chapter-title {
-            color: #fff;
-        }
-
-        .dark-mode .verse-text {
-            color: #fff;
-        }
-
-        .dark-mode .loading {
-            color: #999;
-        }
-
-        .verse.highlighted {
-            background-color: var(--highlight-color);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin: 0.5rem 0;
-            transition: background-color 0.3s ease;
-        }
-        :root {
-            --highlight-color: rgba(255, 223, 186, 0.2);
-        }
-        .dark-mode {
-            --highlight-color: rgba(255, 223, 186, 0.1);
-        }
-
-        /* Estilos para el botón de notas y la ventana emergente */
-        .notes-btn {
+        .offline-indicator {
             position: fixed;
-            right: 2rem;
-            bottom: 2rem;
-            background: #4CAF50;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
             color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: none;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            z-index: 1000;
-            font-size: 24px;
-        }
-
-        .notes-btn:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-
-        .notes-panel {
-            position: fixed;
-            right: -400px;
-            top: 0;
-            width: 400px;
-            height: 100vh;
-            background: white;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
-            transition: right 0.3s ease;
-            z-index: 999;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .notes-panel.open {
-            right: 0;
-        }
-
-        .notes-header {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 1rem;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .notes-header h3 {
-            margin: 0;
-            color: #4CAF50;
-            font-size: 1.4rem;
-            flex: 1;
-        }
-
-        .copy-note {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 0.5rem;
-            font-size: 1.1rem;
-            width: 100%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
 
-        .copy-note:hover {
-            background: #45a049;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        .offline-indicator.visible {
+            display: flex;
         }
 
-        .copy-note .material-icons {
-            font-size: 1.2rem;
-        }
+        @media (max-width: 768px) {
+            .verse {
+                font-size: 1.1rem;
+                line-height: 1.8;
+                margin-bottom: 1rem;
+            }
 
-        .close-notes {
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            transition: background-color 0.3s;
-        }
+            .header-content {
+                padding: 0;
+            }
 
-        .close-notes:hover {
-            background-color: rgba(0,0,0,0.1);
-        }
+            .version-selector {
+                font-size: 0.9rem;
+                padding: 0.4rem;
+            }
 
-        .notes-textarea {
-            flex: 1;
-            resize: none;
-            padding: 1.5rem;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-top: 1rem;
-        }
+            .nav-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
 
-        .notes-textarea:focus {
-            outline: none;
-            border-color: #4CAF50;
-        }
-
-        /* Modo oscuro */
-        .dark-mode .notes-panel {
-            background: #1a1a1a;
-            color: #fff;
-        }
-
-        .dark-mode .notes-textarea {
-            background: #2d2d2d;
-            color: #fff;
-            border-color: #4d4d4d;
-        }
-
-        .dark-mode .notes-header {
-            border-bottom-color: #4CAF50;
-        }
-
-        .dark-mode .close-notes:hover {
-            background-color: rgba(255,255,255,0.1);
+            .content {
+                padding: 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-left">
+    <div class="header">
+        <div class="header-content">
             <a href="./index.html" class="back-button">
                 <span class="material-icons">arrow_back</span>
-                <span>Volver</span>
             </a>
             <select class="version-selector" id="versionSelector">
                 <option value="rvr1960">Reina Valera 1960</option>
@@ -387,49 +183,31 @@
                 <option value="ntv">Nueva Traducción Viviente</option>
                 <option value="tla">Traducción en Lenguaje Actual</option>
             </select>
+            <button id="darkModeToggle" class="back-button">
+                <span class="material-icons">dark_mode</span>
+            </button>
         </div>
-        <button id="darkModeToggle" class="icon-button">
-            <span class="material-icons">dark_mode</span>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" id="prevButton">
+            <span class="material-icons">chevron_left</span>
+            Anterior
         </button>
-    </header>
-
-    <main>
-        <div class="navigation-controls">
-            <button id="prevChapter" class="nav-button">
-                <span class="material-icons">chevron_left</span>
-                Anterior
-            </button>
-            <select id="bookSelector" class="chapter-selector"></select>
-            <select id="chapterSelector" class="chapter-selector"></select>
-            <button id="nextChapter" class="nav-button">
-                Siguiente
-                <span class="material-icons">chevron_right</span>
-            </button>
-        </div>
-        <h1 class="chapter-title" id="chapterTitle"></h1>
-        <div id="verseContent"></div>
-    </main>
-
-    <!-- Panel de notas -->
-    <div class="notes-btn" id="notesBtn">
-        <span class="material-icons">edit</span>
-    </div>
-    <div class="notes-panel" id="notesPanel">
-        <div class="notes-header">
-            <div class="header-top">
-                <h3>Notas</h3>
-                <span class="material-icons close-notes" id="closeNotes">close</span>
-            </div>
-            <button class="copy-note" id="copyNote">
-                <span class="material-icons">content_copy</span>
-                Copiar todo
-            </button>
-        </div>
-        <textarea class="notes-textarea" id="notesText" placeholder="Escribe tus notas aquí..."></textarea>
+        <select id="bookSelector" class="nav-button"></select>
+        <select id="chapterSelector" class="nav-button"></select>
+        <button class="nav-button" id="nextButton">
+            Siguiente
+            <span class="material-icons">chevron_right</span>
+        </button>
     </div>
 
-    <div id="offlineIndicator" style="display: none; position: fixed; top: 1rem; right: 1rem; background: #4CAF50; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; z-index: 1000;">
-        <span class="material-icons" style="font-size: 1.2rem; vertical-align: middle; margin-right: 0.3rem;">cloud_off</span>
+    <div class="content" id="verseContent">
+        <div class="loading">Cargando...</div>
+    </div>
+
+    <div class="offline-indicator">
+        <span class="material-icons">cloud_off</span>
         Modo offline
     </div>
 
@@ -439,9 +217,8 @@
         const versionSelector = document.getElementById('versionSelector');
         const bookSelector = document.getElementById('bookSelector');
         const chapterSelector = document.getElementById('chapterSelector');
-        const prevChapter = document.getElementById('prevChapter');
-        const nextChapter = document.getElementById('nextChapter');
-        const chapterTitle = document.getElementById('chapterTitle');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
         const verseContent = document.getElementById('verseContent');
         const body = document.body;
 
@@ -606,7 +383,9 @@
                 
                 // Actualizar título
                 const bookTitle = bookNames[currentBook] || currentBook;
+                const chapterTitle = document.createElement('h1');
                 chapterTitle.textContent = `${bookTitle} ${currentChapter}`;
+                verseContent.insertBefore(chapterTitle, verseContent.firstChild);
                 
             } catch (error) {
                 console.error('Error:', error);
@@ -617,6 +396,10 @@
         // Función para mostrar versículos
         function displayVerses(verses) {
             verseContent.innerHTML = '';
+            const chapterTitle = verseContent.querySelector('h1');
+            if (chapterTitle) {
+                verseContent.removeChild(chapterTitle);
+            }
             verses.forEach(verse => {
                 const verseElement = document.createElement('p');
                 verseElement.className = 'verse';
@@ -679,8 +462,8 @@
 
         // Actualizar navegación
         function updateNavigation(numChapters) {
-            prevChapter.disabled = currentChapter <= 1;
-            nextChapter.disabled = currentChapter >= numChapters;
+            prevButton.disabled = currentChapter <= 1;
+            nextButton.disabled = currentChapter >= numChapters;
         }
 
         // Eventos
@@ -702,7 +485,7 @@
             updateNavigation(chaptersPerBook[currentBook]);
         });
 
-        prevChapter.addEventListener('click', () => {
+        prevButton.addEventListener('click', () => {
             if (currentChapter > 1) {
                 currentChapter--;
                 chapterSelector.value = currentChapter;
@@ -711,7 +494,7 @@
             }
         });
 
-        nextChapter.addEventListener('click', () => {
+        nextButton.addEventListener('click', () => {
             if (currentChapter < chaptersPerBook[currentBook]) {
                 currentChapter++;
                 chapterSelector.value = currentChapter;
@@ -791,11 +574,11 @@
 
         // Manejar estado offline/online
         function updateOfflineStatus() {
-            const indicator = document.getElementById('offlineIndicator');
+            const indicator = document.querySelector('.offline-indicator');
             if (!navigator.onLine) {
-                indicator.style.display = 'block';
+                indicator.classList.add('visible');
             } else {
-                indicator.style.display = 'none';
+                indicator.classList.remove('visible');
             }
         }
 
