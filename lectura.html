@@ -5,210 +5,287 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lectura - Biblia de Poder y Milagros</title>
     <link rel="manifest" href="./manifest.json">
-    <link rel="stylesheet" href="./styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <meta name="theme-color" content="#4CAF50">
+    <link rel="icon" type="image/png" href="./icons/icon-192x192.png">
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
-            background: #f5f5f5;
+        :root {
+            --primary-color: #4CAF50;
+            --text-color: #333;
+            --bg-color: #fff;
+            --verse-number-color: #4CAF50;
+            --header-bg: #4CAF50;
+            --header-text: white;
+            --button-hover: #45a049;
         }
 
-        .header {
-            background: #4CAF50;
-            color: white;
-            padding: 0.5rem;
+        body.dark-mode {
+            --text-color: #fff;
+            --bg-color: #1a1a1a;
+            --verse-number-color: #6abf6e;
+            --header-bg: #2d2d2d;
+            --header-text: #fff;
+            --button-hover: #3d8940;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 0 0.5rem;
         }
 
-        .back-button {
+        .header-controls {
             display: flex;
             align-items: center;
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem;
-            border-radius: 4px;
+            gap: 1rem;
         }
 
-        .back-button:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .version-selector {
+        select {
             padding: 0.5rem;
             border: none;
             border-radius: 4px;
-            background: rgba(255,255,255,0.1);
-            color: white;
-            margin-left: 0.5rem;
-        }
-
-        .version-selector option {
-            background: #4CAF50;
-            color: white;
+            background-color: white;
+            color: #333;
+            font-size: 1rem;
         }
 
         .navigation {
             display: flex;
             align-items: center;
-            padding: 0.5rem;
-            background: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 0 1rem;
         }
 
-        .nav-button {
-            background: none;
-            border: none;
+        button {
             padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: white;
             cursor: pointer;
-            white-space: nowrap;
-            color: #333;
+            font-size: 1rem;
+            transition: background-color 0.3s;
         }
 
-        .nav-button:hover {
-            color: #4CAF50;
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
 
         .content {
             padding: 1rem;
-            max-width: 100%;
+            max-width: 800px;
             margin: 0 auto;
         }
 
         .verse {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            padding: 0 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
 
         .verse-number {
-            color: #4CAF50;
-            font-weight: 500;
+            color: var(--verse-number-color);
+            font-weight: bold;
             margin-right: 0.5rem;
         }
 
-        .dark-mode {
-            background: #1a1a1a;
-            color: #fff;
+        .highlighted {
+            background-color: rgba(76, 175, 80, 0.2);
+            padding: 0.5rem;
+            border-radius: 4px;
         }
 
-        .dark-mode .navigation,
-        .dark-mode .content {
-            background: #1a1a1a;
-            color: #fff;
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-color);
         }
 
-        .dark-mode .nav-button {
-            color: #fff;
-        }
-
-        .dark-mode .verse-number {
-            color: #66bb6a;
+        .error {
+            color: #f44336;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
         }
 
         .offline-indicator {
-            position: fixed;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
             display: none;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 1000;
+            background-color: #ff9800;
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
         }
 
         .offline-indicator.visible {
-            display: flex;
+            display: block;
         }
 
-        @media (max-width: 768px) {
-            .verse {
-                font-size: 1.1rem;
-                line-height: 1.8;
-                margin-bottom: 1rem;
+        #darkModeToggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Estilos para el panel de notas */
+        .notes-button {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        .notes-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: var(--bg-color);
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-panel.open {
+            right: 0;
+        }
+
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .notes-close {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .notes-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notes-textarea {
+            flex-grow: 1;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            font-family: inherit;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .notes-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .notes-panel {
+                width: 100%;
+                right: -100%;
             }
 
-            .header-content {
-                padding: 0;
+            select {
+                max-width: 120px;
             }
 
-            .version-selector {
-                font-size: 0.9rem;
-                padding: 0.4rem;
-            }
-
-            .nav-button {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.9rem;
-            }
-
-            .content {
-                padding: 0.5rem;
+            .header-controls {
+                gap: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <a href="./index.html" class="back-button">
-                <span class="material-icons">arrow_back</span>
-            </a>
-            <select class="version-selector" id="versionSelector">
-                <option value="rvr1960">Reina Valera 1960</option>
+    <header>
+        <div class="header-controls">
+            <select id="versionSelector">
+                <option value="rvr1960">Reina-Valera 1960</option>
                 <option value="dhh">Dios Habla Hoy</option>
                 <option value="lbla">La Biblia de las Américas</option>
                 <option value="ntv">Nueva Traducción Viviente</option>
                 <option value="tla">Traducción en Lenguaje Actual</option>
             </select>
-            <button id="darkModeToggle" class="back-button">
-                <span class="material-icons">dark_mode</span>
-            </button>
+            <select id="bookSelector"></select>
+            <select id="chapterSelector"></select>
         </div>
-    </div>
+        <div class="header-actions">
+            <button id="notesBtn" class="notes-button" title="Abrir notas">📝</button>
+            <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
+        </div>
+    </header>
 
     <div class="navigation">
-        <button class="nav-button" id="prevButton">
-            <span class="material-icons">chevron_left</span>
-            Anterior
-        </button>
-        <select id="bookSelector" class="nav-button"></select>
-        <select id="chapterSelector" class="nav-button"></select>
-        <button class="nav-button" id="nextButton">
-            Siguiente
-            <span class="material-icons">chevron_right</span>
-        </button>
+        <button id="prevButton">← Anterior</button>
+        <button id="nextButton">Siguiente →</button>
     </div>
 
     <div class="content" id="verseContent">
         <div class="loading">Cargando...</div>
     </div>
 
+    <!-- Panel de notas -->
+    <div id="notesPanel" class="notes-panel">
+        <div class="notes-header">
+            <h2>Notas</h2>
+            <button id="closeNotes" class="notes-close">×</button>
+        </div>
+        <div class="notes-content">
+            <textarea id="notesText" class="notes-textarea" placeholder="Escribe tus notas aquí..."></textarea>
+            <div class="notes-actions">
+                <button id="copyNote">Copiar</button>
+                <button id="saveNote">Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="offline-indicator">
-        <span class="material-icons">cloud_off</span>
-        Modo offline
+        Modo sin conexión
     </div>
 
     <script src="./bible-loader.js"></script>
@@ -422,6 +499,19 @@
 
         // Iniciar carga
         loadInitialBible();
+
+        // Panel de notas
+        const notesPanel = document.getElementById('notesPanel');
+        const notesButton = document.getElementById('notesBtn');
+        const closeNotesButton = document.getElementById('closeNotes');
+
+        notesButton.addEventListener('click', () => {
+            notesPanel.classList.add('open');
+        });
+
+        closeNotesButton.addEventListener('click', () => {
+            notesPanel.classList.remove('open');
+        });
     </script>
 </body>
 </html>
