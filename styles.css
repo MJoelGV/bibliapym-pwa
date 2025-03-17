@@ -1,0 +1,212 @@
+/* Variables */
+:root {
+    --primary-color: #333;
+    --text-color: #333;
+    --background-color: #ffffff;
+    --card-bg: rgba(0, 0, 0, 0.4);
+    --card-text: white;
+}
+
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Página principal */
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.app::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4));
+    z-index: 0;
+}
+
+/* Header página principal */
+.app header {
+    background-color: #333;
+    padding: 0.8rem;
+    position: relative;
+    z-index: 2;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Contenido página principal */
+.app main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.proverb-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+}
+
+.proverb-card h2 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: normal;
+}
+
+.bible-title {
+    font-family: 'Great Vibes', cursive;
+    font-size: 3.5rem;
+    color: white;
+    margin: 1rem 0 2rem;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.proverb-card p {
+    color: white;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin: 0 0 2rem;
+}
+
+.read-more-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.read-more-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.read-more-button .material-icons {
+    font-size: 1.2rem;
+}
+
+/* Página de lectura */
+.reading-page {
+    background: white;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.reading-page header {
+    background: white;
+    border-bottom: 1px solid #eee;
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.reading-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.chapter-selector {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.reading-content {
+    margin-top: 4rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2rem;
+}
+
+.verse {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.verse-number {
+    color: #4CAF50;
+    min-width: 2rem;
+    text-align: right;
+}
+
+.verse-text {
+    flex: 1;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Modo oscuro */
+.dark-mode .reading-page {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.dark-mode .reading-page header {
+    background: #1a1a1a;
+    border-bottom-color: #333;
+}
+
+.dark-mode .chapter-selector {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #333;
+}
+
+.dark-mode .verse-text {
+    color: #fff;
+}

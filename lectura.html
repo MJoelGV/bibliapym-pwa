@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura - Biblia de Poder y Milagros</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #333;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid #eee;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: #333;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .icon-button:hover {
+            color: #000;
+        }
+
+        .version-selector, .chapter-selector {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: #333;
+            min-width: 150px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .version-selector:hover, .chapter-selector:hover {
+            border-color: #4CAF50;
+        }
+
+        .version-selector:focus, .chapter-selector:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        #bookSelector {
+            min-width: 200px;
+            margin-right: 0.5rem;
+        }
+
+        .navigation-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-button {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            color: #333;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f5f5f5;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .chapter-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+            font-weight: normal;
+        }
+
+        .verse {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .verse-number {
+            color: #4CAF50;
+            min-width: 2rem;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .verse-text {
+            flex: 1;
+            font-size: 1.2rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* Modo oscuro */
+        .dark-mode {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .dark-mode header {
+            background: #1a1a1a;
+            border-bottom-color: #333;
+        }
+
+        .dark-mode .icon-button {
+            color: #fff;
+        }
+
+        .dark-mode .version-selector,
+        .dark-mode .chapter-selector {
+            background: #333;
+            border-color: #444;
+            color: #fff;
+        }
+
+        .dark-mode .version-selector:hover,
+        .dark-mode .chapter-selector:hover {
+            border-color: #4CAF50;
+        }
+
+        .dark-mode .navigation-controls {
+            background: #242424;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .dark-mode .nav-button {
+            background: #333;
+            border-color: #444;
+            color: #fff;
+        }
+
+        .dark-mode .nav-button:hover:not(:disabled) {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .dark-mode .nav-button:disabled {
+            background: #242424;
+            border-color: #333;
+        }
+
+        .dark-mode .chapter-title {
+            color: #fff;
+        }
+
+        .dark-mode .verse-text {
+            color: #fff;
+        }
+
+        .dark-mode .loading {
+            color: #999;
+        }
+
+        .verse.highlighted {
+            background-color: var(--highlight-color);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+            transition: background-color 0.3s ease;
+        }
+        :root {
+            --highlight-color: rgba(255, 223, 186, 0.2);
+        }
+        .dark-mode {
+            --highlight-color: rgba(255, 223, 186, 0.1);
+        }
+
+        /* Estilos para el botón de notas y la ventana emergente */
+        .notes-btn {
+            position: fixed;
+            right: 2rem;
+            bottom: 2rem;
+            background: #4CAF50;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 24px;
+        }
+
+        .notes-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .notes-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            z-index: 999;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-panel.open {
+            right: 0;
+        }
+
+        .notes-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 1rem;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notes-header h3 {
+            margin: 0;
+            color: #4CAF50;
+            font-size: 1.4rem;
+            flex: 1;
+        }
+
+        .copy-note {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .copy-note:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .copy-note .material-icons {
+            font-size: 1.2rem;
+        }
+
+        .close-notes {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .close-notes:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .notes-textarea {
+            flex: 1;
+            resize: none;
+            padding: 1.5rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        /* Modo oscuro */
+        .dark-mode .notes-panel {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .dark-mode .notes-textarea {
+            background: #2d2d2d;
+            color: #fff;
+            border-color: #4d4d4d;
+        }
+
+        .dark-mode .notes-header {
+            border-bottom-color: #4CAF50;
+        }
+
+        .dark-mode .close-notes:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <button onclick="window.location.href='index.html'" class="icon-button">
+                <span class="material-icons">arrow_back</span>
+                Volver
+            </button>
+            <select class="version-selector" id="versionSelector">
+                <option value="rvr1960">Reina Valera 1960</option>
+                <option value="dhh">Dios Habla Hoy</option>
+                <option value="lbla">La Biblia de las Américas</option>
+                <option value="ntv">Nueva Traducción Viviente</option>
+                <option value="tla">Traducción en Lenguaje Actual</option>
+            </select>
+        </div>
+        <button id="darkModeToggle" class="icon-button">
+            <span class="material-icons">dark_mode</span>
+        </button>
+    </header>
+
+    <main>
+        <div class="navigation-controls">
+            <button id="prevChapter" class="nav-button">
+                <span class="material-icons">chevron_left</span>
+                Anterior
+            </button>
+            <select id="bookSelector" class="chapter-selector"></select>
+            <select id="chapterSelector" class="chapter-selector"></select>
+            <button id="nextChapter" class="nav-button">
+                Siguiente
+                <span class="material-icons">chevron_right</span>
+            </button>
+        </div>
+        <h1 class="chapter-title" id="chapterTitle"></h1>
+        <div id="verseContent"></div>
+    </main>
+
+    <!-- Panel de notas -->
+    <div class="notes-btn" id="notesBtn">
+        <span class="material-icons">edit</span>
+    </div>
+    <div class="notes-panel" id="notesPanel">
+        <div class="notes-header">
+            <div class="header-top">
+                <h3>Notas</h3>
+                <span class="material-icons close-notes" id="closeNotes">close</span>
+            </div>
+            <button class="copy-note" id="copyNote">
+                <span class="material-icons">content_copy</span>
+                Copiar todo
+            </button>
+        </div>
+        <textarea class="notes-textarea" id="notesText" placeholder="Escribe tus notas aquí..."></textarea>
+    </div>
+
+    <div id="offlineIndicator" style="display: none; position: fixed; top: 1rem; right: 1rem; background: #4CAF50; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; z-index: 1000;">
+        <span class="material-icons" style="font-size: 1.2rem; vertical-align: middle; margin-right: 0.3rem;">cloud_off</span>
+        Modo offline
+    </div>
+
+    <script src="bible-loader.js"></script>
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const versionSelector = document.getElementById('versionSelector');
+        const bookSelector = document.getElementById('bookSelector');
+        const chapterSelector = document.getElementById('chapterSelector');
+        const prevChapter = document.getElementById('prevChapter');
+        const nextChapter = document.getElementById('nextChapter');
+        const chapterTitle = document.getElementById('chapterTitle');
+        const verseContent = document.getElementById('verseContent');
+        const body = document.body;
+
+        // Variables globales
+        let currentBook = 'Genesis';
+        let currentChapter = 1;
+        let currentVersion = 'rvr1960';
+        let currentVerse = null;
+        let bibleData = null;
+
+        // Mapeo de nombres de libros
+        const bookNames = {
+            'Genesis': 'Génesis',
+            'Exodo': 'Éxodo',
+            'Levitico': 'Levítico',
+            'Numeros': 'Números',
+            'Deuteronomio': 'Deuteronomio',
+            'Josue': 'Josué',
+            'Jueces': 'Jueces',
+            'Rut': 'Rut',
+            '1Samuel': '1 Samuel',
+            '2Samuel': '2 Samuel',
+            '1Reyes': '1 Reyes',
+            '2Reyes': '2 Reyes',
+            '1Cronicas': '1 Crónicas',
+            '2Cronicas': '2 Crónicas',
+            'Esdras': 'Esdras',
+            'Nehemias': 'Nehemías',
+            'Ester': 'Ester',
+            'Job': 'Job',
+            'Salmos': 'Salmos',
+            'Proverbios': 'Proverbios',
+            'Eclesiastes': 'Eclesiastés',
+            'Cantares': 'Cantares',
+            'Isaias': 'Isaías',
+            'Jeremias': 'Jeremías',
+            'Lamentaciones': 'Lamentaciones',
+            'Ezequiel': 'Ezequiel',
+            'Daniel': 'Daniel',
+            'Oseas': 'Oseas',
+            'Joel': 'Joel',
+            'Amos': 'Amós',
+            'Abdias': 'Abdías',
+            'Jonas': 'Jonás',
+            'Miqueas': 'Miqueas',
+            'Nahum': 'Nahúm',
+            'Habacuc': 'Habacuc',
+            'Sofonias': 'Sofonías',
+            'Hageo': 'Hageo',
+            'Zacarias': 'Zacarías',
+            'Malaquias': 'Malaquías',
+            'Mateo': 'Mateo',
+            'Marcos': 'Marcos',
+            'Lucas': 'Lucas',
+            'Juan': 'Juan',
+            'Hechos': 'Hechos',
+            'Romanos': 'Romanos',
+            '1Corintios': '1 Corintios',
+            '2Corintios': '2 Corintios',
+            'Galatas': 'Gálatas',
+            'Efesios': 'Efesios',
+            'Filipenses': 'Filipenses',
+            'Colosenses': 'Colosenses',
+            '1Tesalonicenses': '1 Tesalonicenses',
+            '2Tesalonicenses': '2 Tesalonicenses',
+            '1Timoteo': '1 Timoteo',
+            '2Timoteo': '2 Timoteo',
+            'Tito': 'Tito',
+            'Filemon': 'Filemón',
+            'Hebreos': 'Hebreos',
+            'Santiago': 'Santiago',
+            '1Pedro': '1 Pedro',
+            '2Pedro': '2 Pedro',
+            '1Juan': '1 Juan',
+            '2Juan': '2 Juan',
+            '3Juan': '3 Juan',
+            'Judas': 'Judas',
+            'Apocalipsis': 'Apocalipsis'
+        };
+
+        // Lista de libros para el selector
+        const books = Object.keys(bookNames);
+
+        // Mapeo de versiones a archivos
+        const versionFiles = {
+            'rvr1960': 'biblia-files/Reina-Valera 1960.xmm',
+            'dhh': 'biblia-files/Dios Habla Hoy.xmm',
+            'lbla': 'biblia-files/La Biblia de Las Americas.xmm',
+            'ntv': 'biblia-files/Nueva Traducción Viviente.xmm',
+            'tla': 'biblia-files/Traducción en Lenguaje Actual.xmm'
+        };
+
+        // Capítulos por libro
+        const chaptersPerBook = {
+            'Genesis': 50, 'Exodo': 40, 'Levitico': 27, 'Numeros': 36, 'Deuteronomio': 34,
+            'Josue': 24, 'Jueces': 21, 'Rut': 4, '1Samuel': 31, '2Samuel': 24, '1Reyes': 22,
+            '2Reyes': 25, '1Cronicas': 29, '2Cronicas': 36, 'Esdras': 10, 'Nehemias': 13,
+            'Ester': 10, 'Job': 42, 'Salmos': 150, 'Proverbios': 31, 'Eclesiastes': 12,
+            'Cantares': 8, 'Isaias': 66, 'Jeremias': 52, 'Lamentaciones': 5, 'Ezequiel': 48,
+            'Daniel': 12, 'Oseas': 14, 'Joel': 3, 'Amos': 9, 'Abdias': 1, 'Jonas': 4,
+            'Miqueas': 7, 'Nahum': 3, 'Habacuc': 3, 'Sofonias': 3, 'Hageo': 2, 'Zacarias': 14,
+            'Malaquias': 4, 'Mateo': 28, 'Marcos': 16, 'Lucas': 24, 'Juan': 21, 'Hechos': 28,
+            'Romanos': 16, '1Corintios': 16, '2Corintios': 13, 'Galatas': 6, 'Efesios': 6,
+            'Filipenses': 4, 'Colosenses': 4, '1Tesalonicenses': 5, '2Tesalonicenses': 3,
+            '1Timoteo': 6, '2Timoteo': 4, 'Tito': 3, 'Filemon': 1, 'Hebreos': 13,
+            'Santiago': 5, '1Pedro': 5, '2Pedro': 3, '1Juan': 5, '2Juan': 1, '3Juan': 1,
+            'Judas': 1, 'Apocalipsis': 22
+        };
+
+        // Obtener parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('book')) {
+            currentBook = urlParams.get('book');
+        }
+        if (urlParams.has('chapter')) {
+            currentChapter = parseInt(urlParams.get('chapter'));
+        }
+        if (urlParams.has('version')) {
+            const version = urlParams.get('version').toLowerCase();
+            if (versionFiles[version]) {
+                currentVersion = version;
+                versionSelector.value = version;
+            }
+        }
+        if (urlParams.has('verse')) {
+            currentVerse = parseInt(urlParams.get('verse'));
+        }
+
+        // Cargar versículos
+        async function loadVerses() {
+            verseContent.innerHTML = '<div class="loading">Cargando...</div>';
+            
+            try {
+                const filePath = versionFiles[currentVersion];
+                if (!filePath) throw new Error('Versión no encontrada');
+
+                const response = await fetch(filePath);
+                if (!response.ok) throw new Error('No se pudo cargar el archivo');
+                
+                const data = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, "text/xml");
+                
+                // Buscar el libro y capítulo
+                const book = xmlDoc.querySelector(`b[n="${currentBook}"]`);
+                if (!book) throw new Error(`Libro ${currentBook} no encontrado`);
+                
+                const chapter = book.querySelector(`c[n="${currentChapter}"]`);
+                if (!chapter) throw new Error(`Capítulo ${currentChapter} no encontrado`);
+                
+                // Obtener todos los versículos
+                const verses = Array.from(chapter.querySelectorAll('v'))
+                    .sort((a, b) => parseInt(a.getAttribute('n')) - parseInt(b.getAttribute('n')))
+                    .map(verse => ({
+                        number: parseInt(verse.getAttribute('n')),
+                        text: verse.textContent.trim()
+                    }));
+                
+                if (!verses.length) throw new Error('No se encontraron versículos');
+                
+                displayVerses(verses);
+                
+                // Actualizar título
+                const bookTitle = bookNames[currentBook] || currentBook;
+                chapterTitle.textContent = `${bookTitle} ${currentChapter}`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                verseContent.innerHTML = `<div class="error">Error al cargar los versículos: ${error.message}</div>`;
+            }
+        }
+
+        // Función para mostrar versículos
+        function displayVerses(verses) {
+            verseContent.innerHTML = '';
+            verses.forEach(verse => {
+                const verseElement = document.createElement('p');
+                verseElement.className = 'verse';
+                verseElement.dataset.verse = verse.number;
+                verseElement.innerHTML = `<span class="verse-number">${verse.number}</span> ${verse.text}`;
+                verseContent.appendChild(verseElement);
+            });
+
+            if (currentVerse) {
+                highlightVerse(currentVerse);
+            }
+        }
+
+        // Función para resaltar un versículo específico
+        function highlightVerse(verseNumber) {
+            if (!verseNumber) return;
+            
+            const verses = document.querySelectorAll('.verse');
+            verses.forEach(verse => {
+                if (parseInt(verse.dataset.verse) === verseNumber) {
+                    verse.classList.add('highlighted');
+                    setTimeout(() => {
+                        verse.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                } else {
+                    verse.classList.remove('highlighted');
+                }
+            });
+        }
+
+        // Llenar selector de libros
+        function fillBookSelector() {
+            bookSelector.innerHTML = '';
+            books.forEach(book => {
+                const option = document.createElement('option');
+                option.value = book;
+                option.textContent = bookNames[book];
+                if (book === currentBook) {
+                    option.selected = true;
+                }
+                bookSelector.appendChild(option);
+            });
+        }
+
+        // Llenar selector de capítulos
+        function fillChapterSelector(book) {
+            const numChapters = chaptersPerBook[book];
+            chapterSelector.innerHTML = '';
+            for (let i = 1; i <= numChapters; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Capítulo ${i}`;
+                if (i === currentChapter) {
+                    option.selected = true;
+                }
+                chapterSelector.appendChild(option);
+            }
+            updateNavigation(numChapters);
+        }
+
+        // Actualizar navegación
+        function updateNavigation(numChapters) {
+            prevChapter.disabled = currentChapter <= 1;
+            nextChapter.disabled = currentChapter >= numChapters;
+        }
+
+        // Eventos
+        bookSelector.addEventListener('change', (e) => {
+            currentBook = e.target.value;
+            currentChapter = 1;
+            fillChapterSelector(currentBook);
+            loadVerses();
+        });
+
+        versionSelector.addEventListener('change', (e) => {
+            currentVersion = e.target.value;
+            loadVerses();
+        });
+
+        chapterSelector.addEventListener('change', (e) => {
+            currentChapter = parseInt(e.target.value);
+            loadVerses();
+            updateNavigation(chaptersPerBook[currentBook]);
+        });
+
+        prevChapter.addEventListener('click', () => {
+            if (currentChapter > 1) {
+                currentChapter--;
+                chapterSelector.value = currentChapter;
+                loadVerses();
+                updateNavigation(chaptersPerBook[currentBook]);
+            }
+        });
+
+        nextChapter.addEventListener('click', () => {
+            if (currentChapter < chaptersPerBook[currentBook]) {
+                currentChapter++;
+                chapterSelector.value = currentChapter;
+                loadVerses();
+                updateNavigation(chaptersPerBook[currentBook]);
+            }
+        });
+
+        // Cargar preferencia de modo oscuro
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+        }
+
+        // Cambiar modo oscuro
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+        });
+
+        // Inicializar selectores y cargar versículos
+        bookSelector.value = currentBook;
+        fillBookSelector();
+        fillChapterSelector(currentBook);
+        loadVerses();
+
+        // Funcionalidad de notas
+        const notesBtn = document.getElementById('notesBtn');
+        const notesPanel = document.getElementById('notesPanel');
+        const closeNotes = document.getElementById('closeNotes');
+        const notesText = document.getElementById('notesText');
+        const copyNote = document.getElementById('copyNote');
+
+        // Abrir/cerrar panel de notas
+        notesBtn.addEventListener('click', () => {
+            notesPanel.classList.add('open');
+        });
+
+        closeNotes.addEventListener('click', () => {
+            notesPanel.classList.remove('open');
+        });
+
+        // Copiar nota
+        copyNote.addEventListener('click', async () => {
+            const text = notesText.value.trim();
+            if (text) {
+                try {
+                    const reference = `${bookNames[currentBook]} ${currentChapter}`;
+                    const fullText = `${text}\n\n- ${reference}`;
+                    await navigator.clipboard.writeText(fullText);
+                    alert('Texto copiado al portapapeles');
+                } catch (err) {
+                    alert('No se pudo copiar el texto');
+                }
+            }
+        });
+
+        // Cerrar panel al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!notesPanel.contains(e.target) && !notesBtn.contains(e.target)) {
+                notesPanel.classList.remove('open');
+            }
+        });
+
+        // Registrar el Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar el Service Worker:', error);
+                    });
+            });
+        }
+
+        // Manejar estado offline/online
+        function updateOfflineStatus() {
+            const indicator = document.getElementById('offlineIndicator');
+            if (!navigator.onLine) {
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('online', updateOfflineStatus);
+        window.addEventListener('offline', updateOfflineStatus);
+        updateOfflineStatus(); // Verificar estado inicial
+    </script>
+</body>
+</html>

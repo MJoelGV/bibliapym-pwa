@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblia de Poder y Milagros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .app::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4));
+            z-index: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 0.8rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 0.5rem;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .parallax {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
+        }
+
+        .proverb-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .bible-title {
+            font-family: 'Great Vibes', cursive;
+            color: #fff;
+            font-size: 4rem;
+            margin: 2rem 0;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .proverb-title {
+            color: #4CAF50;
+            font-size: 1.5em;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .proverb-text {
+            font-size: 1.8em;
+            color: #fff;
+            margin: 1.5rem 0;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .reference {
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .read-more {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .read-more:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header>
+            <div class="header-buttons">
+                <button class="icon-button" id="darkModeToggle">
+                    <span class="material-icons">dark_mode</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="parallax"></div>
+        <div class="content">
+            <h1 class="bible-title">Biblia de Poder y Milagros</h1>
+            <div class="proverb-card">
+                <h2 class="proverb-title">Proverbio del Día</h2>
+                <div id="proverbContent">
+                    <div class="loading">Cargando proverbio...</div>
+                </div>
+                <p id="dailyProverb" class="proverb-text"></p>
+                <p id="proverbReference" class="reference"></p>
+                <a href="lectura.html" id="readMoreBtn" class="read-more">
+                    <span class="material-icons">menu_book</span>
+                    Leer más
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar proverbio del día
+        async function getDailyProverb() {
+            const proverbContent = document.getElementById('proverbContent');
+            const dailyProverb = document.getElementById('dailyProverb');
+            const proverbReference = document.getElementById('proverbReference');
+            const readMoreBtn = document.getElementById('readMoreBtn');
+
+            try {
+                const response = await fetch('biblia-files/Reina-Valera 1960.xmm');
+                if (!response.ok) throw new Error('No se pudo cargar el archivo');
+                
+                const data = await response.text();
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data, "text/xml");
+                
+                // Calcular capítulo y versículo basado en la fecha
+                const today = new Date();
+                const day = today.getDate();
+                const chapter = (day % 31) + 1;
+                const verse = (day % 20) + 1;
+                
+                // Buscar el versículo en el XML usando el formato correcto
+                const proverbio = xmlDoc.querySelector(`b[n="Proverbios"] c[n="${chapter}"] v[n="${verse}"]`);
+                
+                if (proverbio) {
+                    dailyProverb.textContent = proverbio.textContent.trim();
+                    proverbReference.textContent = `Proverbios ${chapter}:${verse}`;
+                    readMoreBtn.href = `lectura.html?book=Proverbios&chapter=${chapter}&verse=${verse}&version=rvr1960`;
+                } else {
+                    throw new Error('Versículo no encontrado');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                dailyProverb.textContent = 'El principio de la sabiduría es el temor de Jehová.';
+                proverbReference.textContent = 'Proverbios 1:7';
+                readMoreBtn.href = 'lectura.html?book=Proverbios&chapter=1&verse=7&version=rvr1960';
+            } finally {
+                proverbContent.querySelector('.loading').style.display = 'none';
+            }
+        }
+
+        // Cargar el proverbio cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', getDailyProverb);
+
+        // Modo oscuro
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+        
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.classList.add('dark-mode');
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+        });
+
+        // Efecto parallax
+        window.addEventListener('scroll', function() {
+            const parallax = document.querySelector('.parallax');
+            let scrollPosition = window.pageYOffset;
+            parallax.style.transform = 'translateY(' + scrollPosition * 0.5 + 'px)';
+        });
+
+        // Registrar el Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado:', registration);
+                    })
+                    .catch(error => {
+                        console.error('Error al registrar el Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
