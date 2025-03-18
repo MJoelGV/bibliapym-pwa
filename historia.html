@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia de los Libros - Biblia de Poder y Milagros</title>
+    <link rel="manifest" href="./manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --header-bg: #4CAF50;
+            --header-text: #ffffff;
+            --card-bg: #ffffff;
+            --card-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --header-bg: #2d5a2f;
+            --card-bg: #2d2d2d;
+            --card-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .home-button {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            cursor: pointer;
+            font-size: 1.5rem;
+            text-decoration: none;
+            padding: 0.5rem;
+        }
+
+        #darkModeToggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+
+        .book-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .book-card h2 {
+            margin: 0 0 0.5rem 0;
+            color: #4CAF50;
+        }
+
+        .book-info {
+            display: none;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .book-info.visible {
+            display: block;
+        }
+
+        .book-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .book-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">
+            <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
+            <h1>Historia de los Libros</h1>
+        </div>
+        <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
+    </header>
+
+    <div class="content">
+        <div class="book-list" id="bookList">
+            <!-- Los libros se cargarán dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Control del modo oscuro
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Cargar preferencia de modo oscuro
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.setAttribute('data-theme', 'dark');
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            if (body.getAttribute('data-theme')) {
+                body.removeAttribute('data-theme');
+                localStorage.setItem('darkMode', 'false');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('darkMode', 'true');
+            }
+        });
+
+        // Datos de los libros
+        const booksData = {
+            "Génesis": {
+                autor: "Moisés",
+                fecha: "1445-1405 a.C.",
+                tema: "Los orígenes del mundo, la humanidad y el pueblo de Israel",
+                descripcion: "Génesis, que significa 'principio' o 'origen', narra la creación del mundo, la caída del hombre, el diluvio, y las historias de los patriarcas Abraham, Isaac, Jacob y José. Es fundamental para entender el plan de Dios para la humanidad."
+            },
+            "Éxodo": {
+                autor: "Moisés",
+                fecha: "1445-1405 a.C.",
+                tema: "La liberación de Israel de Egipto",
+                descripcion: "Éxodo relata cómo Dios liberó a los israelitas de la esclavitud en Egipto bajo el liderazgo de Moisés, estableció su pacto con ellos en el Monte Sinaí, y les dio instrucciones para el tabernáculo y el sacerdocio."
+            },
+            "Levítico": {
+                autor: "Moisés",
+                fecha: "1445-1405 a.C.",
+                tema: "Leyes para la santidad y el culto",
+                descripcion: "Levítico contiene las leyes y regulaciones para los sacrificios, la pureza ritual, y las fiestas sagradas. Enseña cómo el pueblo de Dios debe vivir en santidad y adorarle apropiadamente."
+            }
+            // Más libros se agregarán progresivamente
+        };
+
+        // Crear tarjetas de libros
+        const bookList = document.getElementById('bookList');
+
+        Object.entries(booksData).forEach(([bookName, data]) => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `
+                <h2>${bookName}</h2>
+                <div class="book-meta">
+                    <strong>Autor:</strong> ${data.autor}<br>
+                    <strong>Fecha:</strong> ${data.fecha}<br>
+                    <strong>Tema:</strong> ${data.tema}
+                </div>
+                <div class="book-info">
+                    ${data.descripcion}
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                const info = card.querySelector('.book-info');
+                info.classList.toggle('visible');
+            });
+
+            bookList.appendChild(card);
+        });
+    </script>
+</body>
+</html>
