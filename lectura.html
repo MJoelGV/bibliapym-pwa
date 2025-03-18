@@ -522,20 +522,33 @@
             offlineIndicator.classList.remove('with-nav');
         }
 
-        // Mostrar barras al tocar las áreas sensibles
-        touchAreaTop.addEventListener('touchstart', (e) => {
+        // Función para manejar eventos tanto de touch como de clic
+        function handleInteraction(e) {
             e.preventDefault();
             showBars();
-        });
+        }
 
-        touchAreaBottom.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            showBars();
-        });
+        // Eventos touch y clic para áreas sensibles
+        touchAreaTop.addEventListener('touchstart', handleInteraction);
+        touchAreaTop.addEventListener('click', handleInteraction);
+        touchAreaBottom.addEventListener('touchstart', handleInteraction);
+        touchAreaBottom.addEventListener('click', handleInteraction);
 
-        // También mostrar al tocar el contenido
+        // Eventos touch y clic para el contenido
         verseContent.addEventListener('touchstart', () => {
             if (!header.classList.contains('visible')) {
+                showBars();
+            }
+        });
+        verseContent.addEventListener('click', () => {
+            if (!header.classList.contains('visible')) {
+                showBars();
+            }
+        });
+
+        // Eventos para el movimiento del mouse
+        document.addEventListener('mousemove', (e) => {
+            if (e.clientY < 50 || e.clientY > window.innerHeight - 50) {
                 showBars();
             }
         });
