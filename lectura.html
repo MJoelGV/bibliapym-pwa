@@ -197,70 +197,14 @@
         }
 
         /* Estilos para el panel de notas */
-        .notes-button {
-            background: none;
-            border: none;
-            color: var(--header-text);
-            cursor: pointer;
-            font-size: 1.5rem;
-            padding: 0.5rem;
-        }
-
-        .notes-panel {
-            position: fixed;
-            top: 0;
-            right: -400px;
-            width: 400px;
-            height: 100vh;
-            background-color: var(--bg-color);
-            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-            transition: right 0.3s ease;
-            z-index: 1000;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .notes-panel.open {
-            right: 0;
-        }
-
-        .notes-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .notes-close {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 1.5rem;
-        }
-
-        .notes-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .notes-textarea {
-            flex-grow: 1;
-            padding: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: none;
-            font-family: inherit;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-        }
-
+        .notes-button,
+        .notes-panel,
+        .notes-header,
+        .notes-close,
+        .notes-content,
+        .notes-textarea,
         .notes-actions {
-            display: flex;
-            gap: 1rem;
+            display: none;
         }
 
         @media (max-width: 600px) {
@@ -300,7 +244,6 @@
             </select>
         </div>
         <div class="header-actions">
-            <button id="notesBtn" class="notes-button" title="Abrir notas">📝</button>
             <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
         </div>
     </header>
@@ -316,21 +259,6 @@
             <select id="chapterSelector"></select>
         </div>
         <button id="nextButton">Siguiente →</button>
-    </div>
-
-    <!-- Panel de notas -->
-    <div id="notesPanel" class="notes-panel">
-        <div class="notes-header">
-            <h2>Notas</h2>
-            <button id="closeNotes" class="notes-close">×</button>
-        </div>
-        <div class="notes-content">
-            <textarea id="notesText" class="notes-textarea" placeholder="Escribe tus notas aquí..."></textarea>
-            <div class="notes-actions">
-                <button id="copyNote">Copiar</button>
-                <button id="saveNote">Guardar</button>
-            </div>
-        </div>
     </div>
 
     <div class="offline-indicator">
@@ -548,19 +476,6 @@
 
         // Iniciar carga
         loadInitialBible();
-
-        // Panel de notas
-        const notesPanel = document.getElementById('notesPanel');
-        const notesButton = document.getElementById('notesBtn');
-        const closeNotesButton = document.getElementById('closeNotes');
-
-        notesButton.addEventListener('click', () => {
-            notesPanel.classList.add('open');
-        });
-
-        closeNotesButton.addEventListener('click', () => {
-            notesPanel.classList.remove('open');
-        });
     </script>
 </body>
 </html>
