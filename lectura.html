@@ -44,13 +44,77 @@
             background-color: var(--header-bg);
             color: var(--header-text);
             padding: 0.8rem;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 100;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: transform 0.3s ease;
+            transform: translateY(-100%);
+        }
+
+        .header.visible {
+            transform: translateY(0);
+        }
+
+        .bottom-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            z-index: 90;
+            transition: transform 0.3s ease;
+            transform: translateY(100%);
+        }
+
+        .bottom-navigation.visible {
+            transform: translateY(0);
+        }
+
+        .touch-area-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            z-index: 89;
+        }
+
+        .touch-area-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            z-index: 89;
+        }
+
+        .content {
+            padding: 1rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .offline-indicator {
+            bottom: 0;
+            transition: transform 0.3s ease, bottom 0.3s ease;
+        }
+
+        .offline-indicator.with-nav {
+            bottom: 80px;
         }
 
         .header-controls {
@@ -69,38 +133,12 @@
             text-decoration: none;
         }
 
-        .bottom-navigation {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-            z-index: 90;
-        }
-
         .bottom-nav-controls {
             display: flex;
             align-items: center;
             gap: 1rem;
             flex: 1;
             justify-content: center;
-        }
-
-        .content {
-            padding: 1rem;
-            padding-bottom: 5rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .offline-indicator {
-            bottom: 80px;
         }
 
         select {
@@ -171,22 +209,6 @@
             font-size: 1.1rem;
         }
 
-        .offline-indicator {
-            display: none;
-            background-color: #ff9800;
-            color: white;
-            padding: 0.5rem;
-            text-align: center;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
-
-        .offline-indicator.visible {
-            display: block;
-        }
-
         #darkModeToggle {
             background: none;
             border: none;
@@ -232,6 +254,7 @@
     </style>
 </head>
 <body>
+    <div class="touch-area-top"></div>
     <header class="header">
         <div class="header-controls">
             <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
@@ -252,6 +275,7 @@
         <div class="loading">Cargando...</div>
     </div>
 
+    <div class="touch-area-bottom"></div>
     <div class="bottom-navigation">
         <button id="prevButton">← Anterior</button>
         <div class="bottom-nav-controls">
@@ -473,6 +497,51 @@
                     });
             });
         }
+
+        // Control de barras de navegación
+        const header = document.querySelector('.header');
+        const bottomNav = document.querySelector('.bottom-navigation');
+        const touchAreaTop = document.querySelector('.touch-area-top');
+        const touchAreaBottom = document.querySelector('.touch-area-bottom');
+        const offlineIndicator = document.querySelector('.offline-indicator');
+        let hideTimeout;
+
+        function showBars() {
+            header.classList.add('visible');
+            bottomNav.classList.add('visible');
+            offlineIndicator.classList.add('with-nav');
+            
+            // Ocultar después de 3 segundos
+            clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(hideBars, 3000);
+        }
+
+        function hideBars() {
+            header.classList.remove('visible');
+            bottomNav.classList.remove('visible');
+            offlineIndicator.classList.remove('with-nav');
+        }
+
+        // Mostrar barras al tocar las áreas sensibles
+        touchAreaTop.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            showBars();
+        });
+
+        touchAreaBottom.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            showBars();
+        });
+
+        // También mostrar al tocar el contenido
+        verseContent.addEventListener('touchstart', () => {
+            if (!header.classList.contains('visible')) {
+                showBars();
+            }
+        });
+
+        // Mostrar barras inicialmente y ocultarlas después de 3 segundos
+        showBars();
 
         // Iniciar carga
         loadInitialBible();
