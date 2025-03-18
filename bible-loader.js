@@ -124,9 +124,29 @@ class BibleLoader {
     }
 
     getRandomProverb() {
-        const chapter = Math.floor(Math.random() * 31) + 1;
-        const verse = Math.floor(Math.random() * 20) + 1;
+        // Usar la fecha actual como semilla
+        const today = new Date();
+        const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+        
+        // Usar el seed para generar un número pseudo-aleatorio
+        const hash = this.hashCode(seed.toString());
+        
+        // Obtener capítulo (1-31) y versículo (1-20) basados en el hash
+        const chapter = (Math.abs(hash) % 31) + 1;
+        const verse = (Math.abs(hash * 31) % 20) + 1;
+        
         return { chapter, verse };
+    }
+
+    // Función auxiliar para generar un hash consistente
+    hashCode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convertir a entero de 32 bits
+        }
+        return hash;
     }
 }
 
