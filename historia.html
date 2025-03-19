@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historia de los Libros - Biblia de Poder y Milagros</title>
+    <title>Historia de los Libros</title>
     <link rel="manifest" href="./manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -61,37 +61,32 @@
             background-color: var(--header-bg);
             color: var(--header-text);
             padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
-        .header-content {
+        .header-title {
+            margin: 0 0 0.8rem 0;
+            font-size: 2rem;
+            text-align: center;
+            font-family: 'Great Vibes', cursive;
+            color: var(--header-text);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .controls-container {
             display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 90%;
         }
 
         .nav-buttons {
             display: flex;
             gap: 0.3rem;
             align-items: center;
-        }
-
-        .home-button, #darkModeToggle {
-            font-size: 1.2rem;
-            text-decoration: none;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
-            background: var(--bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            cursor: pointer;
+            justify-content: flex-start;
         }
 
         .search-container {
@@ -302,22 +297,21 @@
         }
 
         @media (max-width: 600px) {
-            .header-content {
-                margin-bottom: 0.3rem;
+            .header {
+                padding: 0.8rem 0.5rem;
             }
 
-            .header-content h1 {
-                font-size: 1.3rem;
-                margin: 0.3rem 0;
+            .header-title {
+                font-size: 1.8rem;
+                margin: 0 0 0.6rem 0;
+            }
+
+            .controls-container {
+                gap: 0.3rem;
             }
 
             .nav-buttons {
                 gap: 0.2rem;
-            }
-
-            .home-button, #darkModeToggle {
-                font-size: 1.1rem;
-                padding: 0.2rem 0.5rem;
             }
 
             .search-container {
@@ -379,34 +373,34 @@
 </head>
 <body>
     <header class="header">
-        <div class="header-content">
+        <h1 class="header-title">Historia de los Libros</h1>
+        <div class="controls-container">
             <div class="nav-buttons">
                 <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
                 <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
             </div>
-            <h1>Historia de los Libros</h1>
-        </div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Buscar por nombre, autor, tema..." class="search-input">
-            <div id="searchResults" class="search-results"></div>
-        </div>
-        <div class="filters-container">
-            <div class="filter-dropdown">
-                <button class="filter-trigger" data-type="testamento">Testamento: Todos</button>
-                <div class="filter-options">
-                    <div class="filter-option selected" data-filter="todos">Todos</div>
-                    <div class="filter-option" data-filter="antiguo">Antiguo Testamento</div>
-                    <div class="filter-option" data-filter="nuevo">Nuevo Testamento</div>
-                </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, autor, tema..." class="search-input">
+                <div id="searchResults" class="search-results"></div>
             </div>
-            <div class="filter-dropdown">
-                <button class="filter-trigger" data-type="categoria">Categoría: Todos</button>
-                <div class="filter-options">
-                    <div class="filter-option selected" data-filter="todos">Todos</div>
-                    <div class="filter-option" data-filter="historico">Históricos</div>
-                    <div class="filter-option" data-filter="poetico">Poéticos</div>
-                    <div class="filter-option" data-filter="profetico">Proféticos</div>
-                    <div class="filter-option" data-filter="epistola">Epístolas</div>
+            <div class="filters-container">
+                <div class="filter-dropdown">
+                    <button class="filter-trigger" data-type="testamento">Testamento: Todos</button>
+                    <div class="filter-options">
+                        <div class="filter-option selected" data-filter="todos">Todos</div>
+                        <div class="filter-option" data-filter="antiguo">Antiguo Testamento</div>
+                        <div class="filter-option" data-filter="nuevo">Nuevo Testamento</div>
+                    </div>
+                </div>
+                <div class="filter-dropdown">
+                    <button class="filter-trigger" data-type="categoria">Categoría: Todos</button>
+                    <div class="filter-options">
+                        <div class="filter-option selected" data-filter="todos">Todos</div>
+                        <div class="filter-option" data-filter="historico">Históricos</div>
+                        <div class="filter-option" data-filter="poetico">Poéticos</div>
+                        <div class="filter-option" data-filter="profetico">Proféticos</div>
+                        <div class="filter-option" data-filter="epistola">Epístolas</div>
+                    </div>
                 </div>
             </div>
         </div>
