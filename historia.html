@@ -23,6 +23,9 @@
             --result-bg: #ffffff;
             --highlight-bg: rgba(76, 175, 80, 0.2);
             --highlight-text: #333333;
+            --filter-active: #4CAF50;
+            --filter-inactive: #808080;
+            --filter-bg: rgba(76, 175, 80, 0.1);
         }
 
         [data-theme="dark"] {
@@ -40,6 +43,9 @@
             --result-bg: #2d2d2d;
             --highlight-bg: rgba(76, 175, 80, 0.3);
             --highlight-text: #ffffff;
+            --filter-active: #4CAF50;
+            --filter-inactive: #666666;
+            --filter-bg: rgba(76, 175, 80, 0.2);
         }
 
         body {
@@ -207,6 +213,55 @@
             color: var(--result-text);
         }
 
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-width: 600px;
+            margin: 1rem auto;
+            width: 90%;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--bg-color);
+            color: var(--filter-inactive);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .filter-button.active {
+            background: var(--filter-bg);
+            color: var(--filter-active);
+            border-color: var(--filter-active);
+        }
+
+        .filter-button:hover {
+            border-color: var(--filter-active);
+            transform: translateY(-1px);
+        }
+
+        .filter-label {
+            width: 100%;
+            text-align: center;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
         @media (max-width: 600px) {
             .book-list {
                 grid-template-columns: 1fr;
@@ -223,6 +278,22 @@
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Buscar por nombre, autor, tema..." class="search-input">
             <div id="searchResults" class="search-results"></div>
+        </div>
+        <div class="filters-container">
+            <div class="filter-group">
+                <div class="filter-label">Testamento</div>
+                <button class="filter-button active" data-filter="todos">Todos</button>
+                <button class="filter-button" data-filter="antiguo">Antiguo Testamento</button>
+                <button class="filter-button" data-filter="nuevo">Nuevo Testamento</button>
+            </div>
+            <div class="filter-group">
+                <div class="filter-label">Categoría</div>
+                <button class="filter-button active" data-filter="todos">Todos</button>
+                <button class="filter-button" data-filter="historico">Históricos</button>
+                <button class="filter-button" data-filter="poetico">Poéticos</button>
+                <button class="filter-button" data-filter="profetico">Proféticos</button>
+                <button class="filter-button" data-filter="epistola">Epístolas</button>
+            </div>
         </div>
         <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
     </header>
@@ -653,12 +724,88 @@
             }
         };
 
+        // Categorización de libros
+        const bookCategories = {
+            "Génesis": { testamento: "antiguo", categoria: "historico" },
+            "Éxodo": { testamento: "antiguo", categoria: "historico" },
+            "Levítico": { testamento: "antiguo", categoria: "historico" },
+            "Números": { testamento: "antiguo", categoria: "historico" },
+            "Deuteronomio": { testamento: "antiguo", categoria: "historico" },
+            "Josué": { testamento: "antiguo", categoria: "historico" },
+            "Jueces": { testamento: "antiguo", categoria: "historico" },
+            "Rut": { testamento: "antiguo", categoria: "historico" },
+            "1 Samuel": { testamento: "antiguo", categoria: "historico" },
+            "2 Samuel": { testamento: "antiguo", categoria: "historico" },
+            "1 Reyes": { testamento: "antiguo", categoria: "historico" },
+            "2 Reyes": { testamento: "antiguo", categoria: "historico" },
+            "1 Crónicas": { testamento: "antiguo", categoria: "historico" },
+            "2 Crónicas": { testamento: "antiguo", categoria: "historico" },
+            "Esdras": { testamento: "antiguo", categoria: "historico" },
+            "Nehemías": { testamento: "antiguo", categoria: "historico" },
+            "Ester": { testamento: "antiguo", categoria: "historico" },
+            "Job": { testamento: "antiguo", categoria: "poetico" },
+            "Salmos": { testamento: "antiguo", categoria: "poetico" },
+            "Proverbios": { testamento: "antiguo", categoria: "poetico" },
+            "Eclesiastés": { testamento: "antiguo", categoria: "poetico" },
+            "Cantares": { testamento: "antiguo", categoria: "poetico" },
+            "Isaías": { testamento: "antiguo", categoria: "profetico" },
+            "Jeremías": { testamento: "antiguo", categoria: "profetico" },
+            "Lamentaciones": { testamento: "antiguo", categoria: "poetico" },
+            "Ezequiel": { testamento: "antiguo", categoria: "profetico" },
+            "Daniel": { testamento: "antiguo", categoria: "profetico" },
+            "Oseas": { testamento: "antiguo", categoria: "profetico" },
+            "Joel": { testamento: "antiguo", categoria: "profetico" },
+            "Amós": { testamento: "antiguo", categoria: "profetico" },
+            "Abdías": { testamento: "antiguo", categoria: "profetico" },
+            "Jonás": { testamento: "antiguo", categoria: "profetico" },
+            "Miqueas": { testamento: "antiguo", categoria: "profetico" },
+            "Nahúm": { testamento: "antiguo", categoria: "profetico" },
+            "Habacuc": { testamento: "antiguo", categoria: "profetico" },
+            "Sofonías": { testamento: "antiguo", categoria: "profetico" },
+            "Hageo": { testamento: "antiguo", categoria: "profetico" },
+            "Zacarías": { testamento: "antiguo", categoria: "profetico" },
+            "Malaquías": { testamento: "antiguo", categoria: "profetico" },
+            "Mateo": { testamento: "nuevo", categoria: "historico" },
+            "Marcos": { testamento: "nuevo", categoria: "historico" },
+            "Lucas": { testamento: "nuevo", categoria: "historico" },
+            "Juan": { testamento: "nuevo", categoria: "historico" },
+            "Hechos": { testamento: "nuevo", categoria: "historico" },
+            "Romanos": { testamento: "nuevo", categoria: "epistola" },
+            "1 Corintios": { testamento: "nuevo", categoria: "epistola" },
+            "2 Corintios": { testamento: "nuevo", categoria: "epistola" },
+            "Gálatas": { testamento: "nuevo", categoria: "epistola" },
+            "Efesios": { testamento: "nuevo", categoria: "epistola" },
+            "Filipenses": { testamento: "nuevo", categoria: "epistola" },
+            "Colosenses": { testamento: "nuevo", categoria: "epistola" },
+            "1 Tesalonicenses": { testamento: "nuevo", categoria: "epistola" },
+            "2 Tesalonicenses": { testamento: "nuevo", categoria: "epistola" },
+            "1 Timoteo": { testamento: "nuevo", categoria: "epistola" },
+            "2 Timoteo": { testamento: "nuevo", categoria: "epistola" },
+            "Tito": { testamento: "nuevo", categoria: "epistola" },
+            "Filemón": { testamento: "nuevo", categoria: "epistola" },
+            "Hebreos": { testamento: "nuevo", categoria: "epistola" },
+            "Santiago": { testamento: "nuevo", categoria: "epistola" },
+            "1 Pedro": { testamento: "nuevo", categoria: "epistola" },
+            "2 Pedro": { testamento: "nuevo", categoria: "epistola" },
+            "1 Juan": { testamento: "nuevo", categoria: "epistola" },
+            "2 Juan": { testamento: "nuevo", categoria: "epistola" },
+            "3 Juan": { testamento: "nuevo", categoria: "epistola" },
+            "Judas": { testamento: "nuevo", categoria: "epistola" },
+            "Apocalipsis": { testamento: "nuevo", categoria: "profetico" }
+        };
+
+        let activeFilters = {
+            testamento: "todos",
+            categoria: "todos"
+        };
+
         // Crear tarjetas de libros
         const bookList = document.getElementById('bookList');
 
         Object.entries(booksData).forEach(([bookName, data]) => {
             const card = document.createElement('div');
             card.className = 'book-card';
+            card.setAttribute('data-book', bookName);
             card.innerHTML = `
                 <h2>${bookName}</h2>
                 <div class="book-meta">
@@ -679,12 +826,62 @@
             bookList.appendChild(card);
         });
 
+        // Función para aplicar filtros
+        function applyFilters() {
+            const cards = document.querySelectorAll('.book-card');
+            cards.forEach(card => {
+                const bookName = card.getAttribute('data-book');
+                const bookInfo = bookCategories[bookName];
+                
+                const testamentoMatch = activeFilters.testamento === "todos" || 
+                                      bookInfo.testamento === activeFilters.testamento;
+                const categoriaMatch = activeFilters.categoria === "todos" || 
+                                     bookInfo.categoria === activeFilters.categoria;
+
+                if (testamentoMatch && categoriaMatch) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Event listeners para filtros
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const filterGroup = e.target.closest('.filter-group');
+                const filterType = filterGroup.querySelector('.filter-label').textContent.toLowerCase() === 'testamento' ? 'testamento' : 'categoria';
+                
+                // Desactivar otros botones del mismo grupo
+                filterGroup.querySelectorAll('.filter-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Activar el botón seleccionado
+                e.target.classList.add('active');
+                
+                // Actualizar filtros activos
+                activeFilters[filterType] = e.target.getAttribute('data-filter');
+                
+                // Aplicar filtros
+                applyFilters();
+            });
+        });
+
         // Función de búsqueda
         function searchBooks(query) {
             query = query.toLowerCase();
             const results = [];
             
             for (const [bookName, book] of Object.entries(booksData)) {
+                const bookInfo = bookCategories[bookName];
+                const testamentoMatch = activeFilters.testamento === "todos" || 
+                                      bookInfo.testamento === activeFilters.testamento;
+                const categoriaMatch = activeFilters.categoria === "todos" || 
+                                     bookInfo.categoria === activeFilters.categoria;
+
+                if (!testamentoMatch || !categoriaMatch) continue;
+
                 const searchText = `${bookName} ${book.autor} ${book.tema} ${book.descripcion}`.toLowerCase();
                 
                 if (searchText.includes(query)) {
