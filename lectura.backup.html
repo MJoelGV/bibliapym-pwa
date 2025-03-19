@@ -13,7 +13,6 @@
             --text-color: #333;
             --border-color: #ddd;
             --hover-color: #f5f5f5;
-            --verse-number-color: #4CAF50;
         }
 
         body.dark-mode {
@@ -23,7 +22,6 @@
             --text-color: white;
             --border-color: #333;
             --hover-color: #2d2d2d;
-            --verse-number-color: #6abf6e;
         }
 
         * {
@@ -37,12 +35,12 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
+            padding-top: 60px;
         }
 
-        .top-bar {
+        .nav-bar {
             background-color: var(--header-bg);
-            padding: 0.8rem;
+            padding: 1rem;
             position: fixed;
             top: 0;
             left: 0;
@@ -51,10 +49,10 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .top-controls {
+        .nav-controls {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 1rem;
             max-width: 1200px;
             margin: 0 auto;
             position: relative;
@@ -67,7 +65,6 @@
             background: rgba(255,255,255,0.1);
             color: white;
             min-width: 150px;
-            font-size: 0.9rem;
         }
 
         .menu-button {
@@ -99,7 +96,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             min-width: 250px;
             z-index: 1001;
-            padding: 0.5rem 0;
         }
 
         .tools-menu.active {
@@ -147,14 +143,157 @@
         }
 
         .content {
-            padding: 1rem;
-            padding-top: 4rem;
             max-width: 800px;
             margin: 0 auto;
+            padding: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .nav-controls {
+                justify-content: center;
+            }
+
+            .nav-bar {
+                padding: 0.8rem;
+            }
+
+            .bottom-navigation {
+                padding: 0.8rem;
+            }
+
+            .bottom-nav-controls {
+                gap: 0.5rem;
+            }
+
+            select {
+                max-width: 100px;
+                font-size: 0.9rem;
+            }
+
+            .nav-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .tools-menu {
+                left: 0;
+                right: 0;
+                margin: 0.5rem;
+            }
+        }
+
+        .touch-area-top {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            z-index: 89;
+        }
+
+        .touch-area-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            z-index: 89;
+        }
+
+        .bottom-navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            z-index: 90;
+            transition: transform 0.3s ease;
+            transform: translateY(100%);
+        }
+
+        .bottom-navigation.visible {
+            transform: translateY(0);
+        }
+
+        .offline-indicator {
+            bottom: 0;
+            transition: transform 0.3s ease, bottom 0.3s ease;
+        }
+
+        .offline-indicator.with-nav {
+            bottom: 80px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .home-button {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            text-decoration: none;
+        }
+
+        .bottom-nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        select {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: white;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .navigation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 0 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
 
         .verse {
             margin-bottom: 1rem;
+            font-size: 1.1rem;
         }
 
         .verse-number {
@@ -163,97 +302,238 @@
             margin-right: 0.5rem;
         }
 
-        .bottom-navigation {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-color);
-            border-top: 1px solid var(--border-color);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .chapter-selector {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        select {
+        .highlighted {
+            background-color: rgba(76, 175, 80, 0.2);
             padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-color);
+            border-radius: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
             color: var(--text-color);
         }
 
-        button {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-color);
-            color: var(--text-color);
+        .error {
+            color: #f44336;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        #darkModeToggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
             cursor: pointer;
-            transition: background-color 0.2s;
+            font-size: 1.5rem;
+            padding: 0.5rem;
         }
 
-        button:hover {
-            background: var(--hover-color);
+        /* Estilos para el panel de notas */
+        .notes-button,
+        .notes-panel,
+        .notes-header,
+        .notes-close,
+        .notes-content,
+        .notes-textarea,
+        .notes-actions {
+            display: none;
         }
 
         @media (max-width: 600px) {
-            .top-bar {
-                padding: 0.5rem;
-            }
-
-            .top-controls {
-                gap: 0.5rem;
-            }
-
-            #versionSelect {
-                flex: 1;
-                min-width: 0;
-            }
-
-            .menu-button {
-                padding: 0.5rem;
-            }
-
-            .tools-menu {
-                left: 0.5rem;
-                right: 0.5rem;
-            }
-
-            .bottom-navigation {
-                padding: 0.5rem;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .chapter-selector {
-                width: 100%;
+            .nav-controls {
                 justify-content: center;
             }
 
+            .bottom-navigation {
+                padding: 0.8rem;
+            }
+
+            .bottom-nav-controls {
+                gap: 0.5rem;
+            }
+
             select {
-                flex: 1;
+                max-width: 100px;
+                font-size: 0.9rem;
+            }
+
+            .nav-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .study-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            background: var(--bg-color);
+            border-left: 1px solid var(--border-color);
+            box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .study-panel.active {
+            transform: translateX(0);
+        }
+
+        .study-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .study-title {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-study {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .study-content {
+            padding: 1rem;
+            overflow-y: auto;
+            height: calc(100% - 60px);
+        }
+
+        .study-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .study-section h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 600px) {
+            .study-panel {
+                width: 100%;
+            }
+        }
+
+        /* Estilos para los recursos de estudio */
+        .reference-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .ref-location {
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .ref-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .dict-entry {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .dict-word {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .dict-original {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .dict-definition {
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .dict-usage {
+            font-style: italic;
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .dict-examples {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.8rem;
+        }
+
+        .example {
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--accent-color);
+        }
+
+        .commentary-entry {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .commentary-author {
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .commentary-text {
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .commentary-refs {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 600px) {
+            .dict-original {
+                flex-direction: column;
+                gap: 0.3rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="top-controls">
+    <nav class="nav-bar">
+        <div class="nav-controls">
             <select id="versionSelect">
                 <option value="Reina-Valera 1960">Reina-Valera 1960</option>
             </select>
             <button class="menu-button" id="toolsMenuBtn">🛠️ Herramientas</button>
             <button class="menu-button" id="darkModeToggle">🌓</button>
         </div>
-    </div>
+    </nav>
 
     <div class="tools-menu" id="toolsMenu">
         <a href="./index.html" class="menu-item">
@@ -287,6 +567,28 @@
         <div class="loading">Cargando...</div>
     </div>
 
+    <div id="studyPanel" class="study-panel">
+        <div class="study-header">
+            <h3 class="study-title">Recursos de Estudio</h3>
+            <button class="close-study">×</button>
+        </div>
+        <div class="study-content">
+            <div id="references" class="study-section">
+                <h4>Referencias Cruzadas</h4>
+                <div class="reference-list"></div>
+            </div>
+            <div id="dictionary" class="study-section">
+                <h4>Diccionario Bíblico</h4>
+                <div class="dictionary-content"></div>
+            </div>
+            <div id="commentary" class="study-section">
+                <h4>Comentarios</h4>
+                <div class="commentary-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="touch-area-bottom"></div>
     <div class="bottom-navigation">
         <button id="prevButton">← Anterior</button>
         <div class="chapter-selector">
@@ -296,6 +598,11 @@
         <button id="nextButton">Siguiente →</button>
     </div>
 
+    <div class="offline-indicator">
+        Modo sin conexión
+    </div>
+
+    <script src="./bible-loader.js"></script>
     <script>
         const darkModeToggle = document.getElementById('darkModeToggle');
         const versionSelect = document.getElementById('versionSelect');
@@ -304,55 +611,18 @@
         const prevButton = document.getElementById('prevButton');
         const nextButton = document.getElementById('nextButton');
         const verseContent = document.getElementById('verseContent');
+        const body = document.body;
 
-        const toolsMenuBtn = document.getElementById('toolsMenuBtn');
-        const toolsMenu = document.getElementById('toolsMenu');
-        const referencesBtn = document.getElementById('referencesBtn');
-        const dictionaryBtn = document.getElementById('dictionaryBtn');
-        const commentaryBtn = document.getElementById('commentaryBtn');
-
-        toolsMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toolsMenu.classList.toggle('active');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!toolsMenu.contains(e.target) && e.target !== toolsMenuBtn) {
-                toolsMenu.classList.remove('active');
-            }
-        });
-
-        referencesBtn.addEventListener('click', () => {
-            toolsMenu.classList.remove('active');
-            // Implementar función de referencias
-        });
-
-        dictionaryBtn.addEventListener('click', () => {
-            toolsMenu.classList.remove('active');
-            // Implementar función de diccionario
-        });
-
-        commentaryBtn.addEventListener('click', () => {
-            toolsMenu.classList.remove('active');
-            // Implementar función de comentarios
-        });
-
-        darkModeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
-        });
-
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-        }
-
+        // Inicializar BibleLoader
         const bibleLoader = new BibleLoader();
         let xmlDoc = null;
 
+        // Variables de estado
         let currentBook = 'Génesis';
         let currentChapter = 1;
         let currentVerse = 1;
 
+        // Mapeo de versiones
         const versionMap = {
             'rvr1960': 'Reina-Valera 1960',
             'dhh': 'Dios Habla Hoy',
@@ -361,30 +631,38 @@
             'tla': 'Traducción en Lenguaje Actual'
         };
 
+        // Cargar la Biblia inicial
         async function loadInitialBible() {
             try {
+                // Obtener parámetros de la URL
                 const params = new URLSearchParams(window.location.search);
                 const book = params.get('book');
                 const chapter = params.get('chapter');
                 const verse = params.get('verse');
                 const version = params.get('version') || 'rvr1960';
 
+                // Establecer versión
                 versionSelect.value = version;
 
+                // Cargar la Biblia
                 xmlDoc = await bibleLoader.loadBible(versionMap[version]);
 
+                // Obtener lista de libros y llenar el selector
                 const books = bibleLoader.getBooks(xmlDoc);
                 bookSelector.innerHTML = books.map(book => 
                     `<option value="${book}">${book}</option>`
                 ).join('');
 
+                // Establecer libro actual
                 if (book) {
                     currentBook = book;
                     bookSelector.value = bibleLoader.bookNames[book] || book;
                 }
 
+                // Actualizar capítulos
                 updateChapterSelector();
 
+                // Establecer capítulo y versículo
                 if (chapter) {
                     currentChapter = parseInt(chapter);
                     chapterSelector.value = currentChapter;
@@ -393,8 +671,10 @@
                     currentVerse = parseInt(verse);
                 }
 
+                // Cargar versículos
                 await loadVerses();
 
+                // Si hay un versículo específico, scrollear hasta él
                 if (currentVerse > 1) {
                     const verseElement = document.querySelector(`[data-verse="${currentVerse}"]`);
                     if (verseElement) {
@@ -409,6 +689,7 @@
             }
         }
 
+        // Actualizar selector de capítulos
         function updateChapterSelector() {
             try {
                 const numChapters = bibleLoader.getChaptersCount(xmlDoc, currentBook);
@@ -422,15 +703,18 @@
             }
         }
 
+        // Cargar versículos
         async function loadVerses() {
             try {
                 verseContent.innerHTML = '<div class="loading">Cargando...</div>';
                 
                 const verses = bibleLoader.getVerses(xmlDoc, currentBook, currentChapter);
                 
+                // Crear título del capítulo
                 const chapterTitle = document.createElement('h1');
                 chapterTitle.textContent = `${currentBook} ${currentChapter}`;
                 
+                // Crear contenedor de versículos
                 const versesContainer = document.createElement('div');
                 verses.forEach(verse => {
                     const verseElement = document.createElement('p');
@@ -440,6 +724,7 @@
                     versesContainer.appendChild(verseElement);
                 });
                 
+                // Limpiar y agregar nuevo contenido
                 verseContent.innerHTML = '';
                 verseContent.appendChild(chapterTitle);
                 verseContent.appendChild(versesContainer);
@@ -450,6 +735,7 @@
             }
         }
 
+        // Eventos
         versionSelect.addEventListener('change', async () => {
             try {
                 xmlDoc = await bibleLoader.loadBible(versionMap[versionSelect.value]);
@@ -488,6 +774,17 @@
             }
         });
 
+        // Modo oscuro
+        if (localStorage.getItem('darkMode') === 'true') {
+            body.classList.add('dark-mode');
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', body.classList.contains('dark-mode'));
+        });
+
+        // Manejar estado offline/online
         function updateOfflineStatus() {
             const indicator = document.querySelector('.offline-indicator');
             if (!navigator.onLine) {
@@ -501,6 +798,7 @@
         window.addEventListener('offline', updateOfflineStatus);
         updateOfflineStatus();
 
+        // Registrar Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js')
@@ -513,7 +811,8 @@
             });
         }
 
-        const header = document.querySelector('.top-bar');
+        // Control de barras de navegación
+        const header = document.querySelector('.nav-bar');
         const bottomNav = document.querySelector('.bottom-navigation');
         const touchAreaTop = document.querySelector('.touch-area-top');
         const touchAreaBottom = document.querySelector('.touch-area-bottom');
@@ -525,6 +824,7 @@
             bottomNav.classList.add('visible');
             offlineIndicator.classList.add('with-nav');
             
+            // Ocultar después de 3 segundos
             clearTimeout(hideTimeout);
             hideTimeout = setTimeout(hideBars, 3000);
         }
@@ -535,16 +835,19 @@
             offlineIndicator.classList.remove('with-nav');
         }
 
+        // Función para manejar eventos tanto de touch como de clic
         function handleInteraction(e) {
             e.preventDefault();
             showBars();
         }
 
+        // Eventos touch y clic para áreas sensibles
         touchAreaTop.addEventListener('touchstart', handleInteraction);
         touchAreaTop.addEventListener('click', handleInteraction);
         touchAreaBottom.addEventListener('touchstart', handleInteraction);
         touchAreaBottom.addEventListener('click', handleInteraction);
 
+        // Eventos touch y clic para el contenido
         verseContent.addEventListener('touchstart', () => {
             if (!header.classList.contains('visible')) {
                 showBars();
@@ -556,20 +859,25 @@
             }
         });
 
+        // Eventos para el movimiento del mouse
         document.addEventListener('mousemove', (e) => {
             if (e.clientY < 50 || e.clientY > window.innerHeight - 50) {
                 showBars();
             }
         });
 
+        // Mostrar barras inicialmente y ocultarlas después de 3 segundos
         showBars();
 
+        // Iniciar carga
         loadInitialBible();
 
+        // Variables globales para los recursos de estudio
         let references = {};
         let dictionary = {};
         let commentary = {};
 
+        // Cargar los recursos al inicio
         async function loadStudyResources() {
             try {
                 const [refsResponse, dictResponse, commResponse] = await Promise.all([
@@ -586,6 +894,7 @@
             }
         }
 
+        // Mostrar referencias para un versículo
         function showReferences(verseId) {
             const referenceList = document.querySelector('.reference-list');
             const refs = references[verseId] || [];
@@ -598,6 +907,7 @@
             `).join('') : '<p>No hay referencias disponibles para este versículo.</p>';
         }
 
+        // Buscar en el diccionario
         function searchDictionary(word) {
             const dictionaryContent = document.querySelector('.dictionary-content');
             const entry = dictionary[word.toLowerCase()];
@@ -622,6 +932,7 @@
             }
         }
 
+        // Mostrar comentario para un versículo
         function showCommentary(verseId) {
             const commentaryContent = document.querySelector('.commentary-content');
             const comm = commentary[verseId];
@@ -642,11 +953,13 @@
             }
         }
 
+        // Eventos para los botones de herramientas
         document.addEventListener('DOMContentLoaded', function() {
             const studyPanel = document.getElementById('studyPanel');
             const closeStudy = document.querySelector('.close-study');
             const toolButtons = document.querySelectorAll('.nav-button');
             
+            // Cargar recursos al inicio
             loadStudyResources();
             
             toolButtons.forEach(button => {
@@ -668,12 +981,48 @@
                 studyPanel.classList.remove('active');
             });
 
+            // Cerrar panel al hacer clic fuera
             document.addEventListener('click', (e) => {
                 if (!studyPanel.contains(e.target) && 
                     !e.target.classList.contains('nav-button')) {
                     studyPanel.classList.remove('active');
                 }
             });
+        });
+
+        // Menú de herramientas
+        const toolsMenuBtn = document.getElementById('toolsMenuBtn');
+        const toolsMenu = document.getElementById('toolsMenu');
+
+        toolsMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toolsMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!toolsMenu.contains(e.target) && e.target !== toolsMenuBtn) {
+                toolsMenu.classList.remove('active');
+            }
+        });
+
+        // Mantener la funcionalidad de los botones de estudio
+        const referencesBtn = document.getElementById('referencesBtn');
+        const dictionaryBtn = document.getElementById('dictionaryBtn');
+        const commentaryBtn = document.getElementById('commentaryBtn');
+
+        referencesBtn.addEventListener('click', () => {
+            toolsMenu.classList.remove('active');
+            showStudyPanel('references');
+        });
+
+        dictionaryBtn.addEventListener('click', () => {
+            toolsMenu.classList.remove('active');
+            showStudyPanel('dictionary');
+        });
+
+        commentaryBtn.addEventListener('click', () => {
+            toolsMenu.classList.remove('active');
+            showStudyPanel('commentary');
         });
     </script>
 </body>
