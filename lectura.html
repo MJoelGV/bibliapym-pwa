@@ -272,21 +272,6 @@
                         <span class="label">Historia</span>
                         <span class="description">Historia de los libros</span>
                     </a>
-                    <button class="menu-item" id="referencesBtn">
-                        <span class="icon">📖</span>
-                        <span class="label">Referencias</span>
-                        <span class="description">Ver referencias cruzadas</span>
-                    </button>
-                    <button class="menu-item" id="dictionaryBtn">
-                        <span class="icon">📔</span>
-                        <span class="label">Diccionario</span>
-                        <span class="description">Buscar términos bíblicos</span>
-                    </button>
-                    <button class="menu-item" id="commentaryBtn">
-                        <span class="icon">💭</span>
-                        <span class="label">Comentarios</span>
-                        <span class="description">Ver comentarios bíblicos</span>
-                    </button>
                 </div>
             </div>
             <button class="menu-button" id="darkModeToggle">🌓</button>
@@ -318,9 +303,6 @@
 
         const toolsMenuBtn = document.getElementById('toolsMenuBtn');
         const toolsMenu = document.getElementById('toolsMenu');
-        const referencesBtn = document.getElementById('referencesBtn');
-        const dictionaryBtn = document.getElementById('dictionaryBtn');
-        const commentaryBtn = document.getElementById('commentaryBtn');
 
         toolsMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -331,21 +313,6 @@
             if (!toolsMenu.contains(e.target) && e.target !== toolsMenuBtn) {
                 toolsMenu.classList.remove('active');
             }
-        });
-
-        referencesBtn.addEventListener('click', () => {
-            toolsMenu.classList.remove('active');
-            // Implementar función de referencias
-        });
-
-        dictionaryBtn.addEventListener('click', () => {
-            toolsMenu.classList.remove('active');
-            // Implementar función de diccionario
-        });
-
-        commentaryBtn.addEventListener('click', () => {
-            toolsMenu.classList.remove('active');
-            // Implementar función de comentarios
         });
 
         darkModeToggle.addEventListener('click', () => {
@@ -576,116 +543,6 @@
         showBars();
 
         loadInitialBible();
-
-        let references = {};
-        let dictionary = {};
-        let commentary = {};
-
-        async function loadStudyResources() {
-            try {
-                const [refsResponse, dictResponse, commResponse] = await Promise.all([
-                    fetch('./data/references.json'),
-                    fetch('./data/dictionary.json'),
-                    fetch('./data/commentary.json')
-                ]);
-
-                references = await refsResponse.json();
-                dictionary = await dictResponse.json();
-                commentary = await commResponse.json();
-            } catch (error) {
-                console.error('Error cargando recursos:', error);
-            }
-        }
-
-        function showReferences(verseId) {
-            const referenceList = document.querySelector('.reference-list');
-            const refs = references[verseId] || [];
-            
-            referenceList.innerHTML = refs.length ? refs.map(ref => `
-                <div class="reference-item">
-                    <div class="ref-location">${ref.book} ${ref.chapter}:${ref.verse}</div>
-                    <div class="ref-text">${ref.text}</div>
-                </div>
-            `).join('') : '<p>No hay referencias disponibles para este versículo.</p>';
-        }
-
-        function searchDictionary(word) {
-            const dictionaryContent = document.querySelector('.dictionary-content');
-            const entry = dictionary[word.toLowerCase()];
-            
-            if (entry) {
-                dictionaryContent.innerHTML = `
-                    <div class="dict-entry">
-                        <div class="dict-word">${word}</div>
-                        <div class="dict-original">
-                            <span>Hebreo: ${entry.hebrew}</span>
-                            <span>Griego: ${entry.greek}</span>
-                        </div>
-                        <div class="dict-definition">${entry.definition}</div>
-                        <div class="dict-usage">${entry.usage}</div>
-                        <div class="dict-examples">
-                            ${entry.examples.map(ex => `<div class="example">${ex}</div>`).join('')}
-                        </div>
-                    </div>
-                `;
-            } else {
-                dictionaryContent.innerHTML = '<p>No se encontró esta palabra en el diccionario.</p>';
-            }
-        }
-
-        function showCommentary(verseId) {
-            const commentaryContent = document.querySelector('.commentary-content');
-            const comm = commentary[verseId];
-            
-            if (comm) {
-                commentaryContent.innerHTML = `
-                    <div class="commentary-entry">
-                        <div class="commentary-author">Por ${comm.author}</div>
-                        <div class="commentary-text">${comm.text}</div>
-                        <div class="commentary-refs">
-                            <strong>Referencias:</strong>
-                            ${comm.references.join(', ')}
-                        </div>
-                    </div>
-                `;
-            } else {
-                commentaryContent.innerHTML = '<p>No hay comentarios disponibles para este versículo.</p>';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const studyPanel = document.getElementById('studyPanel');
-            const closeStudy = document.querySelector('.close-study');
-            const toolButtons = document.querySelectorAll('.nav-button');
-            
-            loadStudyResources();
-            
-            toolButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    studyPanel.classList.add('active');
-                    const currentVerse = 'genesis-1-1'; // Esto se actualizará con el versículo actual
-                    
-                    if (button.classList.contains('references-btn')) {
-                        showReferences(currentVerse);
-                    } else if (button.classList.contains('dictionary-btn')) {
-                        searchDictionary('principio'); // Esto se actualizará con la palabra seleccionada
-                    } else if (button.classList.contains('commentary-btn')) {
-                        showCommentary(currentVerse);
-                    }
-                });
-            });
-
-            closeStudy.addEventListener('click', () => {
-                studyPanel.classList.remove('active');
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!studyPanel.contains(e.target) && 
-                    !e.target.classList.contains('nav-button')) {
-                    studyPanel.classList.remove('active');
-                }
-            });
-        });
     </script>
 </body>
 </html>
