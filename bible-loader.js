@@ -73,7 +73,7 @@ class BibleLoader {
 
     async loadBible(version) {
         try {
-            const response = await fetch(`./biblia-files/${version}.xmm`);
+            const response = await fetch(`./biblia-files/${version}.xml`);
             if (!response.ok) throw new Error('No se pudo cargar el archivo');
             
             const data = await response.text();
