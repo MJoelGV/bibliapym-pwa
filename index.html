@@ -232,24 +232,34 @@
         <div class="proverb-card">
             <div class="card-header">
                 <h2>Proverbio del Día</h2>
+            </div>
+            <div id="proverbContent">
                 <div class="loading">
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
             </div>
-            <p id="dailyProverb" class="proverb-text"></p>
-            <p id="proverbReference" class="reference"></p>
-            <div style="text-align: center;">
-                <a href="./lectura.html" id="readMoreBtn" class="read-more">
-                    <span class="material-icons">menu_book</span>
-                    Leer más
-                </a>
-                <a href="./historia.html" class="read-more" style="margin-left: 1rem;">
-                    <span class="material-icons">auto_stories</span>
-                    Historia
-                </a>
-            </div>
+            <button class="read-more" id="readMoreBtn">
+                <span class="material-icons">menu_book</span>
+                Leer más
+            </button>
+        </div>
+
+        <!-- Botones de navegación -->
+        <div class="nav-buttons" style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button class="read-more" id="readBtn">
+                <span class="material-icons">auto_stories</span>
+                Leer Biblia
+            </button>
+            <button class="read-more" id="historyBtn">
+                <span class="material-icons">history_edu</span>
+                Historia
+            </button>
+            <button class="read-more" id="aboutBtn">
+                <span class="material-icons">info</span>
+                Acerca de
+            </button>
         </div>
     </div>
 
