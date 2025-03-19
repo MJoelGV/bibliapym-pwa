@@ -77,7 +77,13 @@
             margin-bottom: 0.5rem;
         }
 
-        .home-button {
+        .nav-buttons {
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+        }
+
+        .home-button, #darkModeToggle {
             font-size: 1.2rem;
             text-decoration: none;
             padding: 0.3rem 0.6rem;
@@ -85,69 +91,7 @@
             background: var(--bg-color);
             color: var(--text-color);
             border: 1px solid var(--border-color);
-        }
-
-        #darkModeToggle {
-            background: none;
-            border: none;
-            color: var(--header-text);
             cursor: pointer;
-            font-size: 1.5rem;
-            padding: 0.5rem;
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        .book-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-            padding: 1rem 0;
-            padding-top: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .book-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: var(--card-shadow);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
-            z-index: 1;
-        }
-
-        .book-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .book-card h2 {
-            margin: 0 0 0.5rem 0;
-            color: #4CAF50;
-        }
-
-        .book-info {
-            display: none;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-
-        .book-info.visible {
-            display: block;
-        }
-
-        .book-meta {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 0.5rem;
         }
 
         .search-container {
@@ -303,6 +247,60 @@
             background-color: var(--filter-bg);
         }
 
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 1rem 0;
+            padding-top: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .book-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .book-card h2 {
+            margin: 0 0 0.5rem 0;
+            color: #4CAF50;
+        }
+
+        .book-info {
+            display: none;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .book-info.visible {
+            display: block;
+        }
+
+        .book-meta {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
         @media (max-width: 600px) {
             .header-content {
                 margin-bottom: 0.3rem;
@@ -313,7 +311,11 @@
                 margin: 0.3rem 0;
             }
 
-            .home-button {
+            .nav-buttons {
+                gap: 0.2rem;
+            }
+
+            .home-button, #darkModeToggle {
                 font-size: 1.1rem;
                 padding: 0.2rem 0.5rem;
             }
@@ -378,7 +380,10 @@
 <body>
     <header class="header">
         <div class="header-content">
-            <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
+            <div class="nav-buttons">
+                <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
+                <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
+            </div>
             <h1>Historia de los Libros</h1>
         </div>
         <div class="search-container">
@@ -405,7 +410,6 @@
                 </div>
             </div>
         </div>
-        <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
     </header>
 
     <div class="content">
