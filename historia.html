@@ -17,6 +17,12 @@
             --border-color: #ddd;
             --accent-color: #4CAF50;
             --hover-color: #f7f7f7;
+            --input-text: #333333;
+            --input-bg: #ffffff;
+            --result-text: #333333;
+            --result-bg: #ffffff;
+            --highlight-bg: rgba(76, 175, 80, 0.2);
+            --highlight-text: #333333;
         }
 
         [data-theme="dark"] {
@@ -28,6 +34,12 @@
             --border-color: #333;
             --accent-color: #2d5a2f;
             --hover-color: #333;
+            --input-text: #ffffff;
+            --input-bg: #2d2d2d;
+            --result-text: #ffffff;
+            --result-bg: #2d2d2d;
+            --highlight-bg: rgba(76, 175, 80, 0.3);
+            --highlight-text: #ffffff;
         }
 
         body {
@@ -139,8 +151,8 @@
             border: 2px solid var(--border-color);
             border-radius: 25px;
             font-size: 1rem;
-            background: var(--bg-color);
-            color: var(--text-color);
+            background: var(--input-bg);
+            color: var(--input-text);
             transition: all 0.3s ease;
         }
 
@@ -155,7 +167,7 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: var(--bg-color);
+            background: var(--result-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             margin-top: 0.5rem;
@@ -171,6 +183,7 @@
             cursor: pointer;
             border-bottom: 1px solid var(--border-color);
             transition: background-color 0.2s ease;
+            color: var(--result-text);
         }
 
         .search-result-item:last-child {
@@ -182,7 +195,8 @@
         }
 
         .highlight {
-            background-color: rgba(76, 175, 80, 0.2);
+            background-color: var(--highlight-bg);
+            color: var(--highlight-text);
             padding: 0.1rem 0.3rem;
             border-radius: 3px;
         }
@@ -190,7 +204,7 @@
         .no-results {
             padding: 1rem;
             text-align: center;
-            color: var(--text-color);
+            color: var(--result-text);
         }
 
         @media (max-width: 600px) {
