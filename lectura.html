@@ -213,6 +213,50 @@
             background: var(--hover-color);
         }
 
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+            margin: 0 0.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 2rem 0.5rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-button {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.2rem;
+            font-size: 1rem;
+        }
+
+        .highlight {
+            background-color: rgba(76, 175, 80, 0.3);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
+        body.dark-mode .highlight {
+            background-color: rgba(76, 175, 80, 0.4);
+        }
+
         @media (max-width: 600px) {
             .top-bar {
                 padding: 0.5rem;
@@ -259,6 +303,10 @@
             <select id="versionSelect">
                 <option value="Reina-Valera 1960">Reina-Valera 1960</option>
             </select>
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar palabra...">
+                <button class="search-button" id="searchButton">🔍</button>
+            </div>
             <div style="position: relative;">
                 <button class="menu-button" id="toolsMenuBtn">🛠️ Herramientas</button>
                 <div class="tools-menu" id="toolsMenu">
@@ -541,6 +589,58 @@
         });
 
         showBars();
+
+        // Funcionalidad de búsqueda
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+
+        function highlightText(text) {
+            if (!text) return;
+            const verses = document.querySelectorAll('.verse');
+            let found = false;
+            const searchTerm = text.toLowerCase();
+
+            verses.forEach(verse => {
+                const originalText = verse.innerHTML;
+                const textContent = verse.textContent.toLowerCase();
+                
+                if (textContent.includes(searchTerm)) {
+                    found = true;
+                    const regex = new RegExp(`(${text})`, 'gi');
+                    verse.innerHTML = originalText.replace(regex, '<span class="highlight">$1</span>');
+                    
+                    // Scroll al primer resultado
+                    if (!document.querySelector('.highlight')) {
+                        verse.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    verse.innerHTML = originalText;
+                }
+            });
+
+            if (!found) {
+                alert('No se encontraron resultados');
+            }
+        }
+
+        searchButton.addEventListener('click', () => {
+            highlightText(searchInput.value.trim());
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                highlightText(searchInput.value.trim());
+            }
+        });
+
+        // Limpiar resaltado al cambiar de capítulo
+        bookSelector.addEventListener('change', () => {
+            searchInput.value = '';
+        });
+
+        chapterSelector.addEventListener('change', () => {
+            searchInput.value = '';
+        });
 
         loadInitialBible();
     </script>
