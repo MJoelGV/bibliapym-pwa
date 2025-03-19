@@ -42,23 +42,63 @@
 
         .header {
             background-color: var(--header-bg);
-            color: var(--header-text);
-            padding: 0.8rem;
-            position: fixed;
+            padding: 1rem;
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
+            z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.3s ease;
-            transform: translateY(-100%);
         }
 
-        .header.visible {
-            transform: translateY(0);
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .nav-button,
+        .tool-button {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.4rem 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .nav-button:hover,
+        .tool-button:hover {
+            background: var(--hover-color);
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 0.5rem;
+            }
+
+            .header-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.3rem;
+            }
+
+            .nav-button,
+            .tool-button {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            #versionSelect {
+                width: 100%;
+                margin-bottom: 0.3rem;
+            }
         }
 
         .bottom-navigation {
@@ -117,7 +157,7 @@
             bottom: 80px;
         }
 
-        .header-controls {
+        .header-actions {
             display: flex;
             align-items: center;
             gap: 1rem;
@@ -249,64 +289,6 @@
 
             .header-controls {
                 gap: 0.5rem;
-            }
-        }
-
-        .verse-tools {
-            display: flex;
-            gap: 0.5rem;
-            margin: 0.5rem 0;
-            position: sticky;
-            top: 0;
-            background: var(--bg-color);
-            padding: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            z-index: 100;
-        }
-
-        .tool-button {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 0.4rem 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-
-        .tool-button::after {
-            content: attr(data-label);
-        }
-
-        .references-btn::after {
-            content: "Referencias";
-        }
-
-        .dictionary-btn::after {
-            content: "Diccionario";
-        }
-
-        .commentary-btn::after {
-            content: "Comentarios";
-        }
-
-        .tool-button:hover {
-            background: var(--hover-color);
-        }
-
-        @media (max-width: 600px) {
-            .verse-tools {
-                padding: 0.3rem;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .tool-button {
-                padding: 0.3rem 0.6rem;
-                font-size: 0.8rem;
             }
         }
 
@@ -472,26 +454,16 @@
     <div class="touch-area-top"></div>
     <header class="header">
         <div class="header-controls">
-            <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
-            <select id="versionSelector">
-                <option value="rvr1960">Reina-Valera 1960</option>
-                <option value="dhh">Dios Habla Hoy</option>
-                <option value="lbla">La Biblia de las Américas</option>
-                <option value="ntv">Nueva Traducción Viviente</option>
-                <option value="tla">Traducción en Lenguaje Actual</option>
+            <select id="versionSelect">
+                <option value="Reina-Valera 1960">Reina-Valera 1960</option>
             </select>
-            <a href="./historia.html" class="history-button" title="Historia de los Libros">📚</a>
-        </div>
-        <div class="header-actions">
+            <a href="./historia.html" class="nav-button" title="Historia de los Libros">📚</a>
+            <button class="tool-button references-btn" title="Ver referencias cruzadas" data-label="Referencias">📖</button>
+            <button class="tool-button dictionary-btn" title="Buscar en diccionario" data-label="Diccionario">📖</button>
+            <button class="tool-button commentary-btn" title="Ver comentarios" data-label="Comentarios">💭</button>
             <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
         </div>
     </header>
-
-    <div class="verse-tools">
-        <button class="tool-button references-btn" title="Ver referencias cruzadas" data-label="Referencias">📖</button>
-        <button class="tool-button dictionary-btn" title="Buscar en diccionario" data-label="Diccionario">📚</button>
-        <button class="tool-button commentary-btn" title="Ver comentarios" data-label="Comentarios">💭</button>
-    </div>
 
     <div class="content" id="verseContent">
         <div class="loading">Cargando...</div>
@@ -535,7 +507,7 @@
     <script src="./bible-loader.js"></script>
     <script>
         const darkModeToggle = document.getElementById('darkModeToggle');
-        const versionSelector = document.getElementById('versionSelector');
+        const versionSelect = document.getElementById('versionSelect');
         const bookSelector = document.getElementById('bookSelector');
         const chapterSelector = document.getElementById('chapterSelector');
         const prevButton = document.getElementById('prevButton');
@@ -572,7 +544,7 @@
                 const version = params.get('version') || 'rvr1960';
 
                 // Establecer versión
-                versionSelector.value = version;
+                versionSelect.value = version;
 
                 // Cargar la Biblia
                 xmlDoc = await bibleLoader.loadBible(versionMap[version]);
@@ -666,9 +638,9 @@
         }
 
         // Eventos
-        versionSelector.addEventListener('change', async () => {
+        versionSelect.addEventListener('change', async () => {
             try {
-                xmlDoc = await bibleLoader.loadBible(versionMap[versionSelector.value]);
+                xmlDoc = await bibleLoader.loadBible(versionMap[versionSelect.value]);
                 loadVerses();
             } catch (error) {
                 console.error('Error al cambiar versión:', error);
