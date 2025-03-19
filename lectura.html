@@ -42,7 +42,7 @@
 
         .header {
             background-color: var(--header-bg);
-            padding: 1rem;
+            padding: 0.8rem;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -53,29 +53,45 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        #versionSelect {
+            padding: 0.4rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-width: 150px;
         }
 
         .nav-button,
         .tool-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 0.4rem 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
             text-decoration: none;
             color: var(--text-color);
             font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .nav-button:hover,
         .tool-button:hover {
             background: var(--hover-color);
+            transform: translateY(-1px);
+        }
+
+        .tool-button::after {
+            content: attr(data-label);
         }
 
         @media (max-width: 600px) {
@@ -84,20 +100,22 @@
             }
 
             .header-controls {
-                flex-wrap: wrap;
                 justify-content: center;
                 gap: 0.3rem;
+            }
+
+            #versionSelect {
+                width: 100%;
+                margin-bottom: 0.3rem;
             }
 
             .nav-button,
             .tool-button {
                 padding: 0.3rem 0.6rem;
                 font-size: 0.8rem;
-            }
-
-            #versionSelect {
-                width: 100%;
-                margin-bottom: 0.3rem;
+                flex: 1;
+                justify-content: center;
+                min-width: auto;
             }
         }
 
@@ -457,11 +475,11 @@
             <select id="versionSelect">
                 <option value="Reina-Valera 1960">Reina-Valera 1960</option>
             </select>
-            <a href="./historia.html" class="nav-button" title="Historia de los Libros">📚</a>
+            <a href="./historia.html" class="nav-button" title="Historia de los Libros">📚 Historia</a>
             <button class="tool-button references-btn" title="Ver referencias cruzadas" data-label="Referencias">📖</button>
-            <button class="tool-button dictionary-btn" title="Buscar en diccionario" data-label="Diccionario">📖</button>
+            <button class="tool-button dictionary-btn" title="Buscar en diccionario" data-label="Diccionario">📔</button>
             <button class="tool-button commentary-btn" title="Ver comentarios" data-label="Comentarios">💭</button>
-            <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
+            <button id="darkModeToggle" class="nav-button" title="Cambiar modo oscuro">🌓</button>
         </div>
     </header>
 
