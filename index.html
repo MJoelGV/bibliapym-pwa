@@ -239,11 +239,15 @@
                     <span></span>
                     <span></span>
                 </div>
+                <p id="dailyProverb" class="proverb-text"></p>
+                <p id="proverbReference" class="reference"></p>
             </div>
-            <button class="read-more" id="readMoreBtn">
-                <span class="material-icons">menu_book</span>
-                Leer más
-            </button>
+            <div style="text-align: center;">
+                <button class="read-more" id="readMoreBtn">
+                    <span class="material-icons">menu_book</span>
+                    Leer más
+                </button>
+            </div>
         </div>
 
         <!-- Botones de navegación -->
@@ -286,30 +290,37 @@
 
         // Cargar proverbio del día
         async function loadDailyProverb() {
-            const proverbContent = document.querySelector('.proverb-card');
+            const proverbContent = document.getElementById('proverbContent');
             const dailyProverb = document.getElementById('dailyProverb');
             const proverbReference = document.getElementById('proverbReference');
             const readMoreBtn = document.getElementById('readMoreBtn');
+            const loading = proverbContent.querySelector('.loading');
 
             try {
-                const response = await fetch('./biblia-files/Reina-Valera 1960.xmm');
+                const response = await fetch('./biblia-files/Reina-Valera 1960.xml');
                 if (!response.ok) throw new Error('No se pudo cargar el archivo');
                 
                 const data = await response.text();
                 const parser = new DOMParser();
                 const xmlDoc = parser.parseFromString(data, 'text/xml');
 
-                // Obtener un proverbio aleatorio
-                const chapter = Math.floor(Math.random() * 31) + 1;
-                const verses = xmlDoc.querySelectorAll(`verse[chapter="${chapter}"]`);
-                const verse = Math.floor(Math.random() * verses.length) + 1;
+                // Usar la fecha actual para generar un número consistente para el día
+                const today = new Date();
+                const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
                 
-                const proverbio = xmlDoc.querySelector(`verse[chapter="${chapter}"][number="${verse}"]`);
+                // Usar el seed para generar números pseudoaleatorios consistentes para el día
+                const chapter = (seed % 31) + 1; // 31 capítulos en Proverbios
+                const verses = xmlDoc.querySelectorAll(`b[n="Proverbios"] c[n="${chapter}"] v`);
+                const verse = (seed % verses.length) + 1;
+                
+                const proverbio = verses[verse - 1];
                 
                 if (proverbio) {
                     dailyProverb.textContent = proverbio.textContent.trim();
                     proverbReference.textContent = `Proverbios ${chapter}:${verse}`;
-                    readMoreBtn.href = `./lectura.html?book=Proverbios&chapter=${chapter}&verse=${verse}&version=rvr1960`;
+                    readMoreBtn.onclick = () => {
+                        window.location.href = `./lectura.html?book=Proverbios&chapter=${chapter}&verse=${verse}&version=rvr1960`;
+                    };
                 } else {
                     throw new Error('Versículo no encontrado');
                 }
@@ -317,9 +328,13 @@
                 console.error('Error:', error);
                 dailyProverb.textContent = 'El principio de la sabiduría es el temor de Jehová.';
                 proverbReference.textContent = 'Proverbios 1:7';
-                readMoreBtn.href = './lectura.html?book=Proverbios&chapter=1&verse=7&version=rvr1960';
+                readMoreBtn.onclick = () => {
+                    window.location.href = './lectura.html?book=Proverbios&chapter=1&verse=7&version=rvr1960';
+                };
             } finally {
-                proverbContent.querySelector('.loading').style.display = 'none';
+                loading.style.display = 'none';
+                dailyProverb.style.display = 'block';
+                proverbReference.style.display = 'block';
             }
         }
 
@@ -372,7 +387,7 @@
         }
 
         // Manejadores para los botones
-        document.getElementById('readMoreBtn').onclick = () => {
+        document.getElementById('readBtn').onclick = () => {
             window.location.href = 'lectura.html';
         };
 
