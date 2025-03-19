@@ -251,6 +251,182 @@
                 gap: 0.5rem;
             }
         }
+
+        .verse-tools {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .tool-button {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tool-button:hover {
+            background: var(--hover-color);
+        }
+
+        .study-panel {
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            background: var(--bg-color);
+            border-left: 1px solid var(--border-color);
+            box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .study-panel.active {
+            transform: translateX(0);
+        }
+
+        .study-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .study-title {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .close-study {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .study-content {
+            padding: 1rem;
+            overflow-y: auto;
+            height: calc(100% - 60px);
+        }
+
+        .study-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .study-section h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 600px) {
+            .study-panel {
+                width: 100%;
+            }
+        }
+
+        /* Estilos para los recursos de estudio */
+        .reference-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .ref-location {
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .ref-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .dict-entry {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .dict-word {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .dict-original {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .dict-definition {
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .dict-usage {
+            font-style: italic;
+            margin-bottom: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .dict-examples {
+            border-top: 1px solid var(--border-color);
+            padding-top: 0.8rem;
+        }
+
+        .example {
+            font-size: 0.9rem;
+            margin-bottom: 0.4rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--accent-color);
+        }
+
+        .commentary-entry {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .commentary-author {
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .commentary-text {
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .commentary-refs {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 600px) {
+            .dict-original {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -274,6 +450,33 @@
 
     <div class="content" id="verseContent">
         <div class="loading">Cargando...</div>
+    </div>
+
+    <div class="verse-tools">
+        <button class="tool-button references-btn" title="Ver referencias">📖</button>
+        <button class="tool-button dictionary-btn" title="Buscar en diccionario">📚</button>
+        <button class="tool-button commentary-btn" title="Ver comentarios">💭</button>
+    </div>
+
+    <div id="studyPanel" class="study-panel">
+        <div class="study-header">
+            <h3 class="study-title">Recursos de Estudio</h3>
+            <button class="close-study">×</button>
+        </div>
+        <div class="study-content">
+            <div id="references" class="study-section">
+                <h4>Referencias Cruzadas</h4>
+                <div class="reference-list"></div>
+            </div>
+            <div id="dictionary" class="study-section">
+                <h4>Diccionario Bíblico</h4>
+                <div class="dictionary-content"></div>
+            </div>
+            <div id="commentary" class="study-section">
+                <h4>Comentarios</h4>
+                <div class="commentary-content"></div>
+            </div>
+        </div>
     </div>
 
     <div class="touch-area-bottom"></div>
@@ -559,6 +762,124 @@
 
         // Iniciar carga
         loadInitialBible();
+
+        // Variables globales para los recursos de estudio
+        let references = {};
+        let dictionary = {};
+        let commentary = {};
+
+        // Cargar los recursos al inicio
+        async function loadStudyResources() {
+            try {
+                const [refsResponse, dictResponse, commResponse] = await Promise.all([
+                    fetch('./data/references.json'),
+                    fetch('./data/dictionary.json'),
+                    fetch('./data/commentary.json')
+                ]);
+
+                references = await refsResponse.json();
+                dictionary = await dictResponse.json();
+                commentary = await commResponse.json();
+            } catch (error) {
+                console.error('Error cargando recursos:', error);
+            }
+        }
+
+        // Mostrar referencias para un versículo
+        function showReferences(verseId) {
+            const referenceList = document.querySelector('.reference-list');
+            const refs = references[verseId] || [];
+            
+            referenceList.innerHTML = refs.length ? refs.map(ref => `
+                <div class="reference-item">
+                    <div class="ref-location">${ref.book} ${ref.chapter}:${ref.verse}</div>
+                    <div class="ref-text">${ref.text}</div>
+                </div>
+            `).join('') : '<p>No hay referencias disponibles para este versículo.</p>';
+        }
+
+        // Buscar en el diccionario
+        function searchDictionary(word) {
+            const dictionaryContent = document.querySelector('.dictionary-content');
+            const entry = dictionary[word.toLowerCase()];
+            
+            if (entry) {
+                dictionaryContent.innerHTML = `
+                    <div class="dict-entry">
+                        <div class="dict-word">${word}</div>
+                        <div class="dict-original">
+                            <span>Hebreo: ${entry.hebrew}</span>
+                            <span>Griego: ${entry.greek}</span>
+                        </div>
+                        <div class="dict-definition">${entry.definition}</div>
+                        <div class="dict-usage">${entry.usage}</div>
+                        <div class="dict-examples">
+                            ${entry.examples.map(ex => `<div class="example">${ex}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                dictionaryContent.innerHTML = '<p>No se encontró esta palabra en el diccionario.</p>';
+            }
+        }
+
+        // Mostrar comentario para un versículo
+        function showCommentary(verseId) {
+            const commentaryContent = document.querySelector('.commentary-content');
+            const comm = commentary[verseId];
+            
+            if (comm) {
+                commentaryContent.innerHTML = `
+                    <div class="commentary-entry">
+                        <div class="commentary-author">Por ${comm.author}</div>
+                        <div class="commentary-text">${comm.text}</div>
+                        <div class="commentary-refs">
+                            <strong>Referencias:</strong>
+                            ${comm.references.join(', ')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                commentaryContent.innerHTML = '<p>No hay comentarios disponibles para este versículo.</p>';
+            }
+        }
+
+        // Eventos para los botones de herramientas
+        document.addEventListener('DOMContentLoaded', function() {
+            const studyPanel = document.getElementById('studyPanel');
+            const closeStudy = document.querySelector('.close-study');
+            const toolButtons = document.querySelectorAll('.tool-button');
+            
+            // Cargar recursos al inicio
+            loadStudyResources();
+            
+            toolButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    studyPanel.classList.add('active');
+                    const currentVerse = 'genesis-1-1'; // Esto se actualizará con el versículo actual
+                    
+                    if (button.classList.contains('references-btn')) {
+                        showReferences(currentVerse);
+                    } else if (button.classList.contains('dictionary-btn')) {
+                        searchDictionary('principio'); // Esto se actualizará con la palabra seleccionada
+                    } else if (button.classList.contains('commentary-btn')) {
+                        showCommentary(currentVerse);
+                    }
+                });
+            });
+
+            closeStudy.addEventListener('click', () => {
+                studyPanel.classList.remove('active');
+            });
+
+            // Cerrar panel al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!studyPanel.contains(e.target) && 
+                    !e.target.classList.contains('tool-button')) {
+                    studyPanel.classList.remove('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>

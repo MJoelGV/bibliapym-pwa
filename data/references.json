@@ -1,0 +1,36 @@
+{
+    "genesis-1-1": [
+        {
+            "book": "Juan",
+            "chapter": 1,
+            "verse": 1,
+            "text": "En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios."
+        },
+        {
+            "book": "Salmos",
+            "chapter": 33,
+            "verse": 6,
+            "text": "Por la palabra de Jehová fueron hechos los cielos, y todo el ejército de ellos por el aliento de su boca."
+        },
+        {
+            "book": "Hebreos",
+            "chapter": 11,
+            "verse": 3,
+            "text": "Por la fe entendemos haber sido constituido el universo por la palabra de Dios."
+        }
+    ],
+    "juan-3-16": [
+        {
+            "book": "1 Juan",
+            "chapter": 4,
+            "verse": 9,
+            "text": "En esto se mostró el amor de Dios para con nosotros, en que Dios envió a su Hijo unigénito al mundo."
+        },
+        {
+            "book": "Romanos",
+            "chapter": 5,
+            "verse": 8,
+            "text": "Mas Dios muestra su amor para con nosotros, en que siendo aún pecadores, Cristo murió por nosotros."
+        }
+    ]
+}

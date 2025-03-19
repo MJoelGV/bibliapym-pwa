@@ -1,0 +1,22 @@
+{
+    "principio": {
+        "hebrew": "רֵאשִׁית (reshit)",
+        "greek": "ἀρχή (arché)",
+        "definition": "El comienzo absoluto del tiempo y la creación. En hebreo, reshit implica el primer momento o punto de partida.",
+        "usage": "Usado en contextos de creación y origen divino.",
+        "examples": [
+            "Génesis 1:1 - En el principio creó Dios los cielos y la tierra",
+            "Juan 1:1 - En el principio era el Verbo"
+        ]
+    },
+    "amor": {
+        "hebrew": "אַהֲבָה (ahavah)",
+        "greek": "ἀγάπη (agape)",
+        "definition": "Amor incondicional y sacrificial. En griego, agape representa el amor divino y perfecto.",
+        "usage": "Describe el amor de Dios hacia la humanidad y el amor que debemos tener unos por otros.",
+        "examples": [
+            "Juan 3:16 - Porque de tal manera amó Dios al mundo...",
+            "1 Juan 4:8 - Dios es amor"
+        ]
+    }
+}
