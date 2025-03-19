@@ -218,7 +218,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             max-width: 600px;
-            margin: 1rem auto;
+            margin: 0.5rem auto;
             width: 90%;
             justify-content: center;
         }
@@ -226,21 +226,21 @@
         .filter-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.5rem 0;
+            gap: 0.3rem;
+            margin: 0.3rem 0;
             width: 100%;
             justify-content: center;
         }
 
         .filter-button {
-            padding: 0.5rem 1rem;
+            padding: 0.3rem 0.8rem;
             border: 2px solid var(--border-color);
-            border-radius: 20px;
+            border-radius: 15px;
             background: var(--bg-color);
             color: var(--filter-inactive);
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .filter-button.active {
@@ -255,11 +255,42 @@
         }
 
         .filter-label {
-            width: 100%;
-            text-align: center;
+            width: auto;
             color: var(--text-color);
-            font-size: 0.9rem;
-            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+            margin: 0.2rem 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .header-content h1 {
+                font-size: 1.5rem;
+                margin: 0.5rem 0;
+            }
+
+            .search-container {
+                margin: 0.5rem auto;
+            }
+
+            .search-input {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .filter-group {
+                flex-direction: row;
+                align-items: center;
+                margin: 0.2rem 0;
+            }
+
+            .filter-button {
+                padding: 0.2rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .filter-label {
+                margin: 0 0.4rem;
+                font-size: 0.8rem;
+            }
         }
 
         @media (max-width: 600px) {
