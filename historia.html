@@ -14,6 +14,9 @@
             --header-text: #ffffff;
             --card-bg: #ffffff;
             --card-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --border-color: #ddd;
+            --accent-color: #4CAF50;
+            --hover-color: #f7f7f7;
         }
 
         [data-theme="dark"] {
@@ -22,6 +25,9 @@
             --header-bg: #2d5a2f;
             --card-bg: #2d2d2d;
             --card-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            --border-color: #333;
+            --accent-color: #2d5a2f;
+            --hover-color: #333;
         }
 
         body {
@@ -120,6 +126,73 @@
             margin-bottom: 0.5rem;
         }
 
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 1rem auto;
+            width: 90%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-top: 0.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-result-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .highlight {
+            background-color: rgba(76, 175, 80, 0.2);
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+
+        .no-results {
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+
         @media (max-width: 600px) {
             .book-list {
                 grid-template-columns: 1fr;
@@ -132,6 +205,10 @@
         <div class="header-title">
             <a href="./index.html" class="home-button" title="Ir a inicio">🏠</a>
             <h1>Historia de los Libros</h1>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar por nombre, autor, tema..." class="search-input">
+            <div id="searchResults" class="search-results"></div>
         </div>
         <button id="darkModeToggle" title="Cambiar modo oscuro">🌓</button>
     </header>
@@ -586,6 +663,91 @@
             });
 
             bookList.appendChild(card);
+        });
+
+        // Función de búsqueda
+        function searchBooks(query) {
+            query = query.toLowerCase();
+            const results = [];
+            
+            for (const [bookName, book] of Object.entries(booksData)) {
+                const searchText = `${bookName} ${book.autor} ${book.tema} ${book.descripcion}`.toLowerCase();
+                
+                if (searchText.includes(query)) {
+                    results.push({
+                        nombre: bookName,
+                        ...book,
+                        relevancia: calculateRelevance(query, searchText)
+                    });
+                }
+            }
+
+            return results.sort((a, b) => b.relevancia - a.relevancia);
+        }
+
+        function calculateRelevance(query, text) {
+            let score = 0;
+            if (text.includes(query)) score += 10;
+            
+            const words = query.split(' ');
+            words.forEach(word => {
+                if (text.includes(word)) score += 5;
+            });
+            
+            return score;
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function displayResults(results, query) {
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.style.display = results.length ? 'block' : 'none';
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
+                return;
+            }
+
+            resultsContainer.innerHTML = results.map(book => `
+                <div class="search-result-item" onclick="scrollToBook('${book.nombre}')">
+                    <strong>${highlightText(book.nombre, query)}</strong><br>
+                    <small>
+                        Autor: ${highlightText(book.autor, query)} | 
+                        Tema: ${highlightText(book.tema, query)}
+                    </small>
+                </div>
+            `).join('');
+        }
+
+        function scrollToBook(bookName) {
+            const bookElement = document.querySelector(`[data-book="${bookName}"]`);
+            if (bookElement) {
+                bookElement.scrollIntoView({ behavior: 'smooth' });
+                bookElement.click(); // Expande la tarjeta
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (query.length >= 2) {
+                const results = searchBooks(query);
+                displayResults(results, query);
+            } else {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        // Cerrar resultados al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
         });
     </script>
 </body>
