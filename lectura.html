@@ -52,10 +52,9 @@
         .nav-controls {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
             max-width: 1200px;
             margin: 0 auto;
-            flex-wrap: wrap;
         }
 
         #versionSelect {
@@ -85,6 +84,76 @@
             background: rgba(255,255,255,0.2);
         }
 
+        .menu-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .menu-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .tools-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 0.5rem;
+            min-width: 200px;
+            z-index: 1001;
+        }
+
+        .tools-menu.active {
+            display: block;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .menu-item .icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .menu-item .label {
+            flex: 1;
+        }
+
+        .menu-item .description {
+            font-size: 0.8rem;
+            color: #666;
+            margin-left: auto;
+        }
+
+        body.dark-mode .menu-item .description {
+            color: #999;
+        }
+
         .content {
             max-width: 800px;
             margin: 0 auto;
@@ -96,14 +165,32 @@
                 justify-content: center;
             }
 
-            #versionSelect {
-                width: 100%;
-                margin-bottom: 0.5rem;
+            .nav-bar {
+                padding: 0.8rem;
+            }
+
+            .bottom-navigation {
+                padding: 0.8rem;
+            }
+
+            .bottom-nav-controls {
+                gap: 0.5rem;
+            }
+
+            select {
+                max-width: 100px;
+                font-size: 0.9rem;
             }
 
             .nav-button {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.9rem;
+            }
+
+            .tools-menu {
+                left: 0;
+                right: 0;
+                margin: 0.5rem;
             }
         }
 
@@ -456,14 +543,38 @@
             <select id="versionSelect">
                 <option value="Reina-Valera 1960">Reina-Valera 1960</option>
             </select>
-            <a href="./index.html" class="nav-button">🏠 Inicio</a>
-            <a href="./historia.html" class="nav-button">📚 Historia</a>
-            <button class="nav-button" id="referencesBtn">📖 Referencias</button>
-            <button class="nav-button" id="dictionaryBtn">📔 Diccionario</button>
-            <button class="nav-button" id="commentaryBtn">💭 Comentarios</button>
-            <button class="nav-button" id="darkModeToggle">🌓</button>
+            <button class="menu-button" id="toolsMenuBtn">🛠️ Herramientas</button>
+            <button id="darkModeToggle" class="menu-button">🌓</button>
         </div>
     </nav>
+
+    <div class="tools-menu" id="toolsMenu">
+        <a href="./index.html" class="menu-item">
+            <span class="icon">🏠</span>
+            <span class="label">Inicio</span>
+            <span class="description">Volver a la página principal</span>
+        </a>
+        <a href="./historia.html" class="menu-item">
+            <span class="icon">📚</span>
+            <span class="label">Historia</span>
+            <span class="description">Historia de los libros</span>
+        </a>
+        <button class="menu-item" id="referencesBtn">
+            <span class="icon">📖</span>
+            <span class="label">Referencias</span>
+            <span class="description">Ver referencias cruzadas</span>
+        </button>
+        <button class="menu-item" id="dictionaryBtn">
+            <span class="icon">📔</span>
+            <span class="label">Diccionario</span>
+            <span class="description">Buscar términos bíblicos</span>
+        </button>
+        <button class="menu-item" id="commentaryBtn">
+            <span class="icon">💭</span>
+            <span class="label">Comentarios</span>
+            <span class="description">Ver comentarios bíblicos</span>
+        </button>
+    </div>
 
     <div class="content" id="verseContent">
         <div class="loading">Cargando...</div>
@@ -890,6 +1001,41 @@
                     studyPanel.classList.remove('active');
                 }
             });
+        });
+
+        // Menú de herramientas
+        const toolsMenuBtn = document.getElementById('toolsMenuBtn');
+        const toolsMenu = document.getElementById('toolsMenu');
+
+        toolsMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toolsMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!toolsMenu.contains(e.target) && e.target !== toolsMenuBtn) {
+                toolsMenu.classList.remove('active');
+            }
+        });
+
+        // Mantener la funcionalidad de los botones de estudio
+        const referencesBtn = document.getElementById('referencesBtn');
+        const dictionaryBtn = document.getElementById('dictionaryBtn');
+        const commentaryBtn = document.getElementById('commentaryBtn');
+
+        referencesBtn.addEventListener('click', () => {
+            toolsMenu.classList.remove('active');
+            showStudyPanel('references');
+        });
+
+        dictionaryBtn.addEventListener('click', () => {
+            toolsMenu.classList.remove('active');
+            showStudyPanel('dictionary');
+        });
+
+        commentaryBtn.addEventListener('click', () => {
+            toolsMenu.classList.remove('active');
+            showStudyPanel('commentary');
         });
     </script>
 </body>
