@@ -140,6 +140,76 @@
             font-size: 1.2rem;
         }
 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal {
+            position: fixed;
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 90%;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1001;
+        }
+
+        @media (min-width: 768px) {
+            /* Tablet y Desktop */
+            .modal {
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media (max-width: 767px) {
+            /* Móvil */
+            .modal {
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                max-width: 100%;
+                height: 75vh; /* Cubre 3/4 de la pantalla */
+                border-radius: 16px 16px 0 0;
+                transform: translateY(100%);
+                transition: transform 0.3s ease-out;
+            }
+
+            .modal.active {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 3rem;
@@ -244,6 +314,78 @@
         }
 
         loadDailyProverb();
+
+        // Función para mostrar modal
+        function showModal(content, title) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'modal-close';
+            closeBtn.innerHTML = '×';
+            
+            const modalTitle = document.createElement('h2');
+            modalTitle.textContent = title;
+            
+            const modalContent = document.createElement('div');
+            modalContent.innerHTML = content;
+            
+            modal.appendChild(closeBtn);
+            modal.appendChild(modalTitle);
+            modal.appendChild(modalContent);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Mostrar con animación
+            requestAnimationFrame(() => {
+                overlay.style.display = 'block';
+                modal.classList.add('active');
+            });
+            
+            // Cerrar modal
+            function closeModal() {
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    document.body.removeChild(overlay);
+                }, 300);
+            }
+            
+            closeBtn.onclick = closeModal;
+            overlay.onclick = (e) => {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            };
+        }
+
+        // Manejadores para los botones
+        document.getElementById('readMoreBtn').onclick = () => {
+            window.location.href = 'lectura.html';
+        };
+
+        document.getElementById('historyBtn').onclick = () => {
+            fetch('historia.html')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const content = doc.querySelector('.content').innerHTML;
+                    showModal(content, 'Historia de los Libros');
+                });
+        };
+
+        document.getElementById('aboutBtn').onclick = () => {
+            const content = `
+                <p>La Biblia es la Palabra de Dios, inspirada y útil para enseñar, 
+                para redargüir, para corregir, para instruir en justicia.</p>
+                <p>Esta aplicación fue creada con el propósito de facilitar 
+                el acceso a las Escrituras de una manera moderna y accesible.</p>
+            `;
+            showModal(content, 'Acerca de');
+        };
     </script>
 </body>
 </html>
